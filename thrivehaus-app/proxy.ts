@@ -10,7 +10,12 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
+  // Only run auth middleware on protected routes — not on public pages like culture-kitchen
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/dashboard/:path*",
+    "/intake/:path*",
+    "/settings/:path*",
+    "/login",
+    "/signup",
   ],
 };
