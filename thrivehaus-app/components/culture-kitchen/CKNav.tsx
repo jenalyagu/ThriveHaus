@@ -159,8 +159,6 @@ export default function CKNav() {
         </div>
       </div>
 
-      {/* Bottom padding on mobile so content doesn't hide behind tab bar */}
-      <div className="md:hidden h-16" />
     </>
   );
 }
