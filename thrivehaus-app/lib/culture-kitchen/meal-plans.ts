@@ -142,8 +142,309 @@ export const groceryListFromPlan: GroceryItem[] = [
   { name: 'Chicken breast', amount: '1', unit: 'lb', category: 'Meat & Seafood', recipeNames: ['Pancit Canton'] },
 ];
 
+export const sampleVietnamesePlan: MealPlan = {
+  id: 'vietnamese-week-1',
+  name: 'Vietnamese Heritage Week',
+  cultureId: 'vietnamese',
+  cultureName: 'Vietnamese',
+  weekOf: '2026-06-29',
+  estimatedCost: 68,
+  servings: 4,
+  dietaryNotes: ['Contains fish sauce', 'Gluten-free options available', 'Contains shellfish'],
+  homeschoolTheme: 'Balance of Five Flavors & Mekong Delta Geography',
+  days: [
+    {
+      day: 'Monday',
+      breakfast: { recipeId: 'banh-mi', name: 'Bánh Mì Trứng (Egg Bánh Mì)', emoji: '🥖' },
+      lunch: { recipeId: 'spring-rolls', name: 'Gỏi Cuốn (Fresh Spring Rolls)', emoji: '🫔' },
+      dinner: { recipeId: 'pho', name: 'Phở Bò (Beef Noodle Soup)', emoji: '🍜' },
+    },
+    {
+      day: 'Tuesday',
+      breakfast: { recipeId: 'chao', name: 'Cháo Gà (Rice Congee with Chicken)', emoji: '🍚' },
+      lunch: { recipeId: 'pho', name: 'Leftover Phở', emoji: '🍜' },
+      dinner: { recipeId: 'bun-cha', name: 'Bún Chả (Grilled Pork & Noodles)', emoji: '🍖' },
+    },
+    {
+      day: 'Wednesday',
+      breakfast: { recipeId: 'coffee', name: 'Cà Phê Sữa Đá & Bánh', emoji: '☕' },
+      lunch: { recipeId: 'com-tam', name: 'Cơm Tấm (Broken Rice with Pork)', emoji: '🍱' },
+      dinner: { recipeId: 'canh-chua', name: 'Canh Chua (Sweet & Sour Soup)', emoji: '🍲' },
+    },
+    {
+      day: 'Thursday',
+      breakfast: { recipeId: 'xoi', name: 'Xôi Đậu Xanh (Sticky Rice with Mung Bean)', emoji: '🟢' },
+      lunch: { recipeId: 'bun-bo-hue', name: 'Bún Bò Huế (Spicy Beef Noodle)', emoji: '🌶️' },
+      dinner: { recipeId: 'spring-rolls', name: 'Chả Giò (Crispy Fried Spring Rolls)', emoji: '🥢' },
+    },
+    {
+      day: 'Friday',
+      breakfast: { recipeId: 'banh-cuon', name: 'Bánh Cuốn (Steamed Rice Rolls)', emoji: '🫔' },
+      lunch: { recipeId: 'bun-cha', name: 'Bún Chả Leftovers', emoji: '🍖' },
+      dinner: { recipeId: 'ca-kho-to', name: 'Cá Kho Tộ (Caramelized Fish in Clay Pot)', emoji: '🐟' },
+    },
+    {
+      day: 'Saturday',
+      breakfast: { recipeId: 'banh-mi', name: 'Bánh Mì Thịt (Deli Meat Bánh Mì)', emoji: '🥖' },
+      lunch: { recipeId: 'goi-ga', name: 'Gỏi Gà (Chicken & Cabbage Salad)', emoji: '🥗' },
+      dinner: { recipeId: 'pho', name: 'Family Phở Night', emoji: '🍜' },
+      snack: { recipeId: 'che', name: 'Chè Ba Màu (Three-Color Dessert)', emoji: '🍨' },
+    },
+    {
+      day: 'Sunday',
+      breakfast: { recipeId: 'chao', name: 'Cháo Trắng & Pickles', emoji: '🍚' },
+      lunch: { recipeId: 'spring-rolls', name: 'Fresh Roll Assembly Party', emoji: '🫔' },
+      dinner: { recipeId: 'lau', name: 'Lẩu (Vietnamese Hot Pot)', emoji: '🫕' },
+      snack: { recipeId: 'coffee', name: 'Vietnamese Iced Coffee', emoji: '☕' },
+    },
+  ],
+};
+
+export const samplePersianPlan: MealPlan = {
+  id: 'persian-week-1',
+  name: 'Persian Heritage Week',
+  cultureId: 'persian',
+  cultureName: 'Persian',
+  weekOf: '2026-06-29',
+  estimatedCost: 95,
+  servings: 4,
+  dietaryNotes: ['Halal', 'Nut-heavy dishes present', 'Contains lamb & chicken'],
+  homeschoolTheme: 'Silk Road History & Saffron Science',
+  days: [
+    {
+      day: 'Monday',
+      breakfast: { recipeId: 'noon-panir', name: 'Noon Panir Sabzi (Bread, Feta & Herbs)', emoji: '🧀' },
+      lunch: { recipeId: 'ash-reshteh', name: 'Āsh-e Reshteh (Hearty Noodle Soup)', emoji: '🍜' },
+      dinner: { recipeId: 'ghormeh-sabzi', name: 'Ghormeh Sabzi with Saffron Rice', emoji: '🌿' },
+    },
+    {
+      day: 'Tuesday',
+      breakfast: { recipeId: 'halim', name: 'Halim (Wheat & Lamb Porridge)', emoji: '🥣' },
+      lunch: { recipeId: 'ghormeh-sabzi', name: 'Leftover Ghormeh Sabzi', emoji: '🌿' },
+      dinner: { recipeId: 'tahdig', name: 'Tahdig with Mast-o-Khiar', emoji: '🍚' },
+    },
+    {
+      day: 'Wednesday',
+      breakfast: { recipeId: 'omelet', name: 'Kuku Sabzi (Herb Frittata)', emoji: '🥚' },
+      lunch: { recipeId: 'salad-shirazi', name: 'Salad Shirazi & Lavash', emoji: '🥗' },
+      dinner: { recipeId: 'fesenjan', name: 'Fesenjan (Walnut & Pomegranate Stew)', emoji: '🍇' },
+    },
+    {
+      day: 'Thursday',
+      breakfast: { recipeId: 'bread', name: 'Sangak Bread with Jam & Walnuts', emoji: '🍞' },
+      lunch: { recipeId: 'soup', name: 'Soup-e Jo (Barley Soup)', emoji: '🍵' },
+      dinner: { recipeId: 'zereshk-polo', name: 'Zereshk Polo Morgh (Barberry Rice & Chicken)', emoji: '🍗' },
+    },
+    {
+      day: 'Friday',
+      breakfast: { recipeId: 'noon-panir', name: 'Persian Breakfast Spread', emoji: '🧀' },
+      lunch: { recipeId: 'kabab-koobideh', name: 'Kabab Koobideh Wrap', emoji: '🥙' },
+      dinner: { recipeId: 'ghormeh-sabzi', name: 'Friday Ghormeh Sabzi Feast', emoji: '🌿' },
+    },
+    {
+      day: 'Saturday',
+      breakfast: { recipeId: 'halim', name: 'Halim with Cinnamon & Sugar', emoji: '🥣' },
+      lunch: { recipeId: 'dizi', name: 'Dizi (Lamb & Chickpea Stew)', emoji: '🍲' },
+      dinner: { recipeId: 'shishlik', name: 'Shish Kebab on the Grill', emoji: '🍢' },
+      snack: { recipeId: 'faloodeh', name: 'Faloodeh (Rose Water Sorbet)', emoji: '🍧' },
+    },
+    {
+      day: 'Sunday',
+      breakfast: { recipeId: 'omelet', name: 'Kuku Sabzi Leftover Wrap', emoji: '🥚' },
+      lunch: { recipeId: 'tahdig', name: 'Sunday Tahdig & Stew', emoji: '🍚' },
+      dinner: { recipeId: 'abgoosht', name: 'Abgoosht (Lamb Broth & Bread)', emoji: '🍖' },
+      snack: { recipeId: 'shole-zard', name: 'Shole Zard (Saffron Rice Pudding)', emoji: '🍮' },
+    },
+  ],
+};
+
+export const sampleIndianPlan: MealPlan = {
+  id: 'indian-week-1',
+  name: 'Indian Heritage Week',
+  cultureId: 'indian',
+  cultureName: 'Indian',
+  weekOf: '2026-06-29',
+  estimatedCost: 78,
+  servings: 4,
+  dietaryNotes: ['Vegetarian-friendly', 'Contains dairy (ghee, paneer)', 'Gluten-free options'],
+  homeschoolTheme: 'Spice Trade History & Ayurvedic Nutrition',
+  days: [
+    {
+      day: 'Monday',
+      breakfast: { recipeId: 'idli-sambar', name: 'Idli & Sambar', emoji: '🫓' },
+      lunch: { recipeId: 'dal-tadka', name: 'Dal Tadka with Roti', emoji: '🫘' },
+      dinner: { recipeId: 'biryani', name: 'Chicken Biryani', emoji: '🍛' },
+    },
+    {
+      day: 'Tuesday',
+      breakfast: { recipeId: 'paratha', name: 'Aloo Paratha with Yogurt', emoji: '🫓' },
+      lunch: { recipeId: 'biryani', name: 'Leftover Biryani & Raita', emoji: '🍛' },
+      dinner: { recipeId: 'palak-paneer', name: 'Palak Paneer with Naan', emoji: '🥬' },
+    },
+    {
+      day: 'Wednesday',
+      breakfast: { recipeId: 'upma', name: 'Upma (Semolina Porridge)', emoji: '🥣' },
+      lunch: { recipeId: 'chana-masala', name: 'Chana Masala with Rice', emoji: '🫘' },
+      dinner: { recipeId: 'butter-chicken', name: 'Butter Chicken with Garlic Naan', emoji: '🍗' },
+    },
+    {
+      day: 'Thursday',
+      breakfast: { recipeId: 'dosa', name: 'Masala Dosa with Coconut Chutney', emoji: '🫔' },
+      lunch: { recipeId: 'dal-tadka', name: 'Dal & Sabzi Thali', emoji: '🍱' },
+      dinner: { recipeId: 'fish-curry', name: 'Kerala Fish Curry with Rice', emoji: '🐟' },
+    },
+    {
+      day: 'Friday',
+      breakfast: { recipeId: 'poha', name: 'Poha (Flattened Rice Breakfast)', emoji: '🍚' },
+      lunch: { recipeId: 'rajma', name: 'Rajma Chawal (Kidney Bean Curry & Rice)', emoji: '🫘' },
+      dinner: { recipeId: 'biryani', name: 'Friday Biryani Feast', emoji: '🍛' },
+      snack: { recipeId: 'chai', name: 'Masala Chai & Biscuits', emoji: '☕' },
+    },
+    {
+      day: 'Saturday',
+      breakfast: { recipeId: 'paratha', name: 'Methi Paratha & Pickle', emoji: '🫓' },
+      lunch: { recipeId: 'chole-bhature', name: 'Chole Bhature', emoji: '🍞' },
+      dinner: { recipeId: 'rogan-josh', name: 'Rogan Josh with Basmati Rice', emoji: '🍖' },
+      snack: { recipeId: 'kheer', name: 'Kheer (Rice Pudding)', emoji: '🍮' },
+    },
+    {
+      day: 'Sunday',
+      breakfast: { recipeId: 'idli-sambar', name: 'Sunday Idli Brunch', emoji: '🫓' },
+      lunch: { recipeId: 'thali', name: 'Grand Thali Spread', emoji: '🍱' },
+      dinner: { recipeId: 'dal-makhani', name: 'Dal Makhani with Roti & Sabzi', emoji: '🫘' },
+      snack: { recipeId: 'kheer', name: 'Saffron Kheer Dessert', emoji: '🍮' },
+    },
+  ],
+};
+
+export const sampleSouthernPlan: MealPlan = {
+  id: 'southern-week-1',
+  name: 'Southern American Heritage Week',
+  cultureId: 'southern',
+  cultureName: 'Southern American',
+  weekOf: '2026-06-29',
+  estimatedCost: 82,
+  servings: 4,
+  dietaryNotes: ['Contains pork', 'Contains gluten', 'Contains dairy'],
+  homeschoolTheme: 'African American Culinary Heritage & Community Cooking',
+  days: [
+    {
+      day: 'Monday',
+      breakfast: { recipeId: 'biscuits-gravy', name: 'Buttermilk Biscuits & Sawmill Gravy', emoji: '🍞' },
+      lunch: { recipeId: 'collard-greens', name: 'Collard Greens & Cornbread', emoji: '🌽' },
+      dinner: { recipeId: 'fried-chicken', name: 'Buttermilk Fried Chicken', emoji: '🍗' },
+    },
+    {
+      day: 'Tuesday',
+      breakfast: { recipeId: 'grits', name: 'Creamy Cheese Grits & Eggs', emoji: '🥣' },
+      lunch: { recipeId: 'fried-chicken', name: 'Leftover Chicken & Potato Salad', emoji: '🍗' },
+      dinner: { recipeId: 'catfish', name: 'Cornmeal-Crusted Catfish & Hush Puppies', emoji: '🐟' },
+    },
+    {
+      day: 'Wednesday',
+      breakfast: { recipeId: 'french-toast', name: 'Pecan French Toast with Cane Syrup', emoji: '🍞' },
+      lunch: { recipeId: 'black-eyed-peas', name: 'Black-Eyed Peas & Rice (Hoppin\' John)', emoji: '🫘' },
+      dinner: { recipeId: 'pulled-pork', name: 'Slow-Cooked Pulled Pork & Coleslaw', emoji: '🥩' },
+    },
+    {
+      day: 'Thursday',
+      breakfast: { recipeId: 'biscuits', name: 'Drop Biscuits with Muscadine Jelly', emoji: '🍞' },
+      lunch: { recipeId: 'shrimp-grits', name: 'Shrimp & Grits', emoji: '🦐' },
+      dinner: { recipeId: 'gumbo', name: 'Louisiana-Style Chicken & Sausage Gumbo', emoji: '🍲' },
+    },
+    {
+      day: 'Friday',
+      breakfast: { recipeId: 'cornbread', name: 'Skillet Cornbread & Sorghum Syrup', emoji: '🌽' },
+      lunch: { recipeId: 'soup', name: 'Okra & Tomato Soup', emoji: '🍵' },
+      dinner: { recipeId: 'fried-chicken', name: 'Friday Fish Fry & Cornbread', emoji: '🐟' },
+      snack: { recipeId: 'sweet-potato-pie', name: 'Sweet Potato Pie Slice', emoji: '🥧' },
+    },
+    {
+      day: 'Saturday',
+      breakfast: { recipeId: 'grits', name: 'Country Ham & Grits', emoji: '🥣' },
+      lunch: { recipeId: 'bbq', name: 'Backyard BBQ Ribs & Baked Beans', emoji: '🍖' },
+      dinner: { recipeId: 'fried-chicken', name: 'Church Supper Fried Chicken Feast', emoji: '🍗' },
+      snack: { recipeId: 'peach-cobbler', name: 'Peach Cobbler with Vanilla Ice Cream', emoji: '🍑' },
+    },
+    {
+      day: 'Sunday',
+      breakfast: { recipeId: 'biscuits-gravy', name: 'Sunday Biscuits & Gravy', emoji: '🍞' },
+      lunch: { recipeId: 'pot-roast', name: 'Sunday Pot Roast & Root Vegetables', emoji: '🥩' },
+      dinner: { recipeId: 'gumbo', name: 'Sunday Supper Gumbo', emoji: '🍲' },
+      snack: { recipeId: 'banana-pudding', name: 'Banana Pudding', emoji: '🍌' },
+    },
+  ],
+};
+
+export const sampleMediterraneanPlan: MealPlan = {
+  id: 'mediterranean-week-1',
+  name: 'Mediterranean Heritage Week',
+  cultureId: 'mediterranean',
+  cultureName: 'Mediterranean',
+  weekOf: '2026-06-29',
+  estimatedCost: 90,
+  servings: 4,
+  dietaryNotes: ['Pescatarian-friendly', 'Contains gluten', 'Contains dairy'],
+  homeschoolTheme: 'Ancient Greece, Rome & the Olive Oil Economy',
+  days: [
+    {
+      day: 'Monday',
+      breakfast: { recipeId: 'greek-yogurt', name: 'Greek Yogurt with Honey & Walnuts', emoji: '🍯' },
+      lunch: { recipeId: 'hummus', name: 'Hummus Platter with Pita & Veggies', emoji: '🫙' },
+      dinner: { recipeId: 'moussaka', name: 'Moussaka (Greek Eggplant Casserole)', emoji: '🍆' },
+    },
+    {
+      day: 'Tuesday',
+      breakfast: { recipeId: 'toast', name: 'Olive Oil Toast with Za\'atar', emoji: '🍞' },
+      lunch: { recipeId: 'greek-salad', name: 'Horiatiki (Classic Greek Salad)', emoji: '🥗' },
+      dinner: { recipeId: 'grilled-fish', name: 'Whole Grilled Sea Bass with Lemon', emoji: '🐟' },
+    },
+    {
+      day: 'Wednesday',
+      breakfast: { recipeId: 'shakshuka', name: 'Shakshuka (Eggs in Tomato Sauce)', emoji: '🍳' },
+      lunch: { recipeId: 'falafel', name: 'Falafel Wrap with Tzatziki', emoji: '🧆' },
+      dinner: { recipeId: 'lamb-chops', name: 'Grilled Lamb Chops with Tabbouleh', emoji: '🍖' },
+    },
+    {
+      day: 'Thursday',
+      breakfast: { recipeId: 'greek-yogurt', name: 'Labneh & Olive Plate', emoji: '🧀' },
+      lunch: { recipeId: 'pasta', name: 'Pasta al Pomodoro (Italian Tomato Pasta)', emoji: '🍝' },
+      dinner: { recipeId: 'spanakopita', name: 'Spanakopita (Spinach & Feta Pie)', emoji: '🥬' },
+    },
+    {
+      day: 'Friday',
+      breakfast: { recipeId: 'toast', name: 'Pan con Tomate (Spanish Tomato Toast)', emoji: '🍅' },
+      lunch: { recipeId: 'hummus', name: 'Mezze Spread with Hummus & Pita', emoji: '🫙' },
+      dinner: { recipeId: 'paella', name: 'Seafood Paella', emoji: '🦐' },
+      snack: { recipeId: 'baklava', name: 'Baklava & Turkish Tea', emoji: '🍯' },
+    },
+    {
+      day: 'Saturday',
+      breakfast: { recipeId: 'crepes', name: 'Crêpes with Honey & Figs', emoji: '🫓' },
+      lunch: { recipeId: 'greek-salad', name: 'Mezze Lunch Board', emoji: '🥗' },
+      dinner: { recipeId: 'moussaka', name: 'Saturday Moussaka Feast', emoji: '🍆' },
+      snack: { recipeId: 'loukoumades', name: 'Loukoumades (Greek Honey Donuts)', emoji: '🍩' },
+    },
+    {
+      day: 'Sunday',
+      breakfast: { recipeId: 'shakshuka', name: 'Sunday Shakshuka Brunch', emoji: '🍳' },
+      lunch: { recipeId: 'lamb-chops', name: 'Sunday Lamb & Roasted Vegetables', emoji: '🍖' },
+      dinner: { recipeId: 'pasta', name: 'Pasta Night with the Family', emoji: '🍝' },
+      snack: { recipeId: 'baklava', name: 'Pistachio Baklava Dessert', emoji: '🍯' },
+    },
+  ],
+};
+
 export function generateGroceryList(mealPlan: MealPlan): GroceryItem[] {
   return groceryListFromPlan;
 }
 
-export const mealPlans = [sampleMealPlan, sampleMexicanPlan];
+export const mealPlans = [
+  sampleMealPlan,
+  sampleMexicanPlan,
+  sampleVietnamesePlan,
+  samplePersianPlan,
+  sampleIndianPlan,
+  sampleSouthernPlan,
+  sampleMediterraneanPlan,
+];

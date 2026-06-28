@@ -3,13 +3,26 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { cultures } from '@/lib/culture-kitchen/cultures';
-import { sampleMealPlan, sampleMexicanPlan } from '@/lib/culture-kitchen/meal-plans';
+import {
+  sampleMealPlan,
+  sampleMexicanPlan,
+  sampleVietnamesePlan,
+  samplePersianPlan,
+  sampleIndianPlan,
+  sampleSouthernPlan,
+  sampleMediterraneanPlan,
+} from '@/lib/culture-kitchen/meal-plans';
 import { AGE_RANGES, DIETARY_OPTIONS, BUDGET_OPTIONS } from '@/lib/culture-kitchen/family-profile';
 import type { MealPlan } from '@/lib/culture-kitchen/types';
 
 const MEAL_PLANS_BY_CULTURE: Record<string, MealPlan> = {
   filipino: sampleMealPlan,
   mexican: sampleMexicanPlan,
+  vietnamese: sampleVietnamesePlan,
+  persian: samplePersianPlan,
+  indian: sampleIndianPlan,
+  southern: sampleSouthernPlan,
+  mediterranean: sampleMediterraneanPlan,
 };
 
 export default function MealPlanPage() {
