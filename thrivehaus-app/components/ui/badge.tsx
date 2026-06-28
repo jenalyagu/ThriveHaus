@@ -3,18 +3,18 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const badgeVariants = cva(
-  'inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors',
+  'inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold tracking-wide transition-colors',
   {
     variants: {
       variant: {
-        default: 'bg-[#E8DFD0] text-[#5A6F5E]',
-        sage: 'bg-[#E8F0E8] text-[#3B4B3F]',
-        gold: 'bg-[#FBF0D8] text-[#8A5A00]',
-        clay: 'bg-[#F5E8E0] text-[#804030]',
-        easy: 'bg-[#E8F0E8] text-[#3B5A3F]',
-        medium: 'bg-[#FBF4E0] text-[#7A5500]',
-        hard: 'bg-[#F5E0E0] text-[#7A2020]',
-        outline: 'border border-[#E8DFD0] text-[#5A6F5E] bg-transparent',
+        default: 'bg-[#EDE7DC] text-[#4A5E4E]',
+        sage: 'bg-[#D6E8D6] text-[#2A4A2E]',
+        gold: 'bg-[#F5E8C0] text-[#7A4E00]',
+        clay: 'bg-[#F5DDD5] text-[#7A3020]',
+        easy: 'bg-[#D0ECCC] text-[#2A5A30] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]',
+        medium: 'bg-[#FAE8B0] text-[#6A4400] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]',
+        hard: 'bg-[#F5CCCC] text-[#7A1818] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]',
+        outline: 'border-2 border-[#D4CAB8] text-[#6A6050] bg-transparent',
       },
     },
     defaultVariants: { variant: 'default' },

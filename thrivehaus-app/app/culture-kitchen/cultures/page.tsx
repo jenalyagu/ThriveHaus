@@ -24,22 +24,23 @@ export default function CultureLibraryPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl md:text-4xl mb-2" style={{ color: '#3B4B3F' }}>
-          🌍 Culture Library
+      <div className="mb-10">
+        <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#D09E5A' }}>Culture Library</p>
+        <h1 className="font-serif text-4xl md:text-5xl mb-3" style={{ color: '#3B4B3F' }}>
+          🌍 World Cuisines
         </h1>
-        <p className="text-base" style={{ color: '#8A8070' }}>
+        <p className="text-base max-w-xl" style={{ color: '#8A8070' }}>
           Explore world cuisines — their histories, ingredients, recipes, and homeschool connections.
         </p>
       </div>
 
       {/* Search + Filter */}
-      <div className="mb-8 space-y-4">
+      <div className="mb-10 space-y-4">
         <Input
           placeholder="Search cultures or regions..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full md:w-80"
+          className="w-full md:w-96"
         />
         <div className="flex flex-wrap gap-2">
           {regions.map((region) => (
@@ -60,20 +61,24 @@ export default function CultureLibraryPage() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((culture) => (
           <Link key={culture.id} href={`/culture-kitchen/cultures/${culture.id}`}>
-            <Card className="group hover:shadow-xl hover:-translate-y-1 transition-all overflow-hidden h-full">
-              {/* Header band */}
+            <Card className="group hover:shadow-[0_16px_40px_rgba(59,75,63,0.16)] hover:-translate-y-2 transition-all duration-300 overflow-hidden h-full">
+              {/* Gradient header with emoji */}
               <div
-                className="h-28 flex items-center px-6"
+                className="h-36 flex items-end px-6 pb-5 relative overflow-hidden"
                 style={{
-                  background: `linear-gradient(135deg, ${culture.primaryColor}22, ${culture.accentColor}33)`,
+                  background: `linear-gradient(135deg, ${culture.primaryColor}55, ${culture.accentColor}70, ${culture.primaryColor}30)`,
                 }}
               >
-                <span className="text-6xl">{culture.emoji}</span>
-                <div className="ml-4">
-                  <div className="font-serif text-xl font-semibold" style={{ color: '#3B4B3F' }}>
+                <div
+                  className="absolute top-4 right-5 text-7xl opacity-40 select-none group-hover:scale-110 group-hover:opacity-60 transition-all duration-500"
+                >
+                  {culture.emoji}
+                </div>
+                <div className="relative z-10">
+                  <Badge variant="default" className="mb-2 text-xs">{culture.region}</Badge>
+                  <div className="font-serif text-2xl font-bold" style={{ color: '#1E2D22', textShadow: '0 1px 2px rgba(255,255,255,0.4)' }}>
                     {culture.name}
                   </div>
-                  <div className="text-xs" style={{ color: '#5A6F5E' }}>{culture.region}</div>
                 </div>
               </div>
 
@@ -82,12 +87,12 @@ export default function CultureLibraryPage() {
                   {culture.tagline}
                 </p>
 
-                <div className="flex items-center gap-4 text-xs mb-4" style={{ color: '#8A8070' }}>
+                <div className="flex items-center gap-4 text-xs mb-4 font-medium" style={{ color: '#8A8070' }}>
                   <span>🍽 {culture.recipeIds.length} recipes</span>
                   <span>👥 {culture.population}</span>
                 </div>
 
-                <div className="flex flex-wrap gap-1.5 mb-4">
+                <div className="flex flex-wrap gap-1.5 mb-5">
                   {culture.commonIngredients.slice(0, 4).map((ing) => (
                     <Badge key={ing} variant="default">{ing}</Badge>
                   ))}
@@ -97,10 +102,11 @@ export default function CultureLibraryPage() {
                 </div>
 
                 <div
-                  className="text-sm font-medium group-hover:gap-2 transition-all flex items-center gap-1"
+                  className="flex items-center gap-1.5 text-sm font-semibold group-hover:gap-3 transition-all"
                   style={{ color: '#5A6F5E' }}
                 >
-                  Explore culture →
+                  Explore cuisine
+                  <span className="opacity-60 group-hover:opacity-100 transition-opacity">→</span>
                 </div>
               </div>
             </Card>
@@ -110,9 +116,9 @@ export default function CultureLibraryPage() {
 
       {filtered.length === 0 && (
         <div className="text-center py-20">
-          <div className="text-5xl mb-4">🔍</div>
-          <p className="font-serif text-lg" style={{ color: '#3B4B3F' }}>No cultures found</p>
-          <p className="text-sm mt-1" style={{ color: '#8A8070' }}>Try a different search or region filter</p>
+          <div className="text-6xl mb-5">🔍</div>
+          <p className="font-serif text-xl mb-2" style={{ color: '#3B4B3F' }}>No cultures found</p>
+          <p className="text-sm" style={{ color: '#8A8070' }}>Try a different search or region filter</p>
         </div>
       )}
     </div>

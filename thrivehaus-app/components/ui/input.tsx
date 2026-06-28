@@ -6,9 +6,10 @@ const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLI
     <input
       type={type}
       className={cn(
-        'flex h-10 w-full rounded-xl border border-[#E8DFD0] bg-[#F3EFE9] px-4 py-2',
-        'text-sm text-[#3B4B3F] placeholder:text-[#B0A898]',
-        'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5A6F5E] focus-visible:border-transparent',
+        'flex h-11 w-full rounded-xl border-2 border-[#E0D8CC] bg-white px-4 py-2',
+        'text-sm text-[#3B4B3F] placeholder:text-[#B0A898] font-medium',
+        'shadow-[0_1px_3px_rgba(59,75,63,0.06)]',
+        'transition-all duration-200 focus-visible:outline-none focus-visible:ring-0 focus-visible:border-[#5A6F5E] focus-visible:shadow-[0_0_0_3px_rgba(90,111,94,0.15)]',
         'disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
