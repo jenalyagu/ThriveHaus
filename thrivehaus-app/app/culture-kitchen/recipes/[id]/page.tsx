@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { use, useState } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getRecipeById } from '@/lib/culture-kitchen/recipes';
-import { use } from 'react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
 export default function RecipeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -14,388 +18,329 @@ export default function RecipeDetailPage({ params }: { params: Promise<{ id: str
 }
 
 function RecipeDetail({ recipe }: { recipe: NonNullable<ReturnType<typeof getRecipeById>> }) {
-  const [activeTab, setActiveTab] = useState<'recipe' | 'lesson' | 'nutrition' | 'history'>('recipe');
   const [checkedSteps, setCheckedSteps] = useState<Set<number>>(new Set());
   const [servings, setServings] = useState(recipe.servings);
   const [saved, setSaved] = useState(false);
 
   const multiplier = servings / recipe.servings;
-
-  const tabs = [
-    { id: 'recipe', label: '🍳 Recipe' },
-    { id: 'lesson', label: '📚 Lesson' },
-    { id: 'nutrition', label: '🥗 Nutrition' },
-    { id: 'history', label: '📖 History' },
-  ] as const;
-
   const toggleStep = (step: number) => {
-    setCheckedSteps((prev) => {
-      const next = new Set(prev);
-      next.has(step) ? next.delete(step) : next.add(step);
-      return next;
-    });
+    setCheckedSteps((prev) => { const n = new Set(prev); n.has(step) ? n.delete(step) : n.add(step); return n; });
   };
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm mb-6" style={{ color: '#8A8070' }}>
+      <nav className="flex items-center gap-2 text-sm mb-6" style={{ color: '#8A8070' }}>
         <Link href="/culture-kitchen" className="hover:underline">Home</Link>
-        <span>›</span>
-        <Link href="/culture-kitchen/cultures" className="hover:underline">Cultures</Link>
         <span>›</span>
         <Link href={`/culture-kitchen/cultures/${recipe.cultureId}`} className="hover:underline">{recipe.cultureName}</Link>
         <span>›</span>
         <span style={{ color: '#3B4B3F' }}>{recipe.name}</span>
-      </div>
+      </nav>
 
       {/* Hero */}
-      <div className="rounded-3xl overflow-hidden mb-8"
-        style={{ background: 'linear-gradient(135deg, #F3EFE9, #E8DFD0)' }}>
+      <Card className="overflow-hidden mb-8" style={{ background: 'linear-gradient(135deg, #F3EFE9, #E8DFD0)' }}>
         <div className="p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start">
-          <div className="text-9xl md:text-[120px] leading-none">{recipe.emoji}</div>
+          <div className="text-9xl md:text-[120px] leading-none shrink-0">{recipe.emoji}</div>
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-2 mb-3">
-              <Link href={`/culture-kitchen/cultures/${recipe.cultureId}`}
-                className="text-xs px-3 py-1 rounded-full font-medium"
-                style={{ backgroundColor: '#E8DFD0', color: '#5A6F5E' }}>
-                {recipe.cultureName}
-              </Link>
-              <span className="text-xs px-3 py-1 rounded-full capitalize font-medium"
-                style={{
-                  backgroundColor: recipe.difficulty === 'easy' ? '#E8F0E8' : recipe.difficulty === 'medium' ? '#FBF4E8' : '#F5E8E8',
-                  color: recipe.difficulty === 'easy' ? '#5A6F5E' : recipe.difficulty === 'medium' ? '#B08030' : '#B05042',
-                }}>
-                {recipe.difficulty}
-              </span>
+              <Badge variant="default">{recipe.cultureName}</Badge>
+              <Badge variant={recipe.difficulty as 'easy' | 'medium' | 'hard'} className="capitalize">{recipe.difficulty}</Badge>
             </div>
-            <h1 className="font-serif text-3xl md:text-4xl mb-3" style={{ color: '#3B4B3F' }}>
-              {recipe.name}
-            </h1>
-            <p className="text-base leading-relaxed mb-5" style={{ color: '#6B6060' }}>
-              {recipe.description}
-            </p>
+            <h1 className="font-serif text-3xl md:text-4xl mb-3" style={{ color: '#3B4B3F' }}>{recipe.name}</h1>
+            <p className="text-base leading-relaxed mb-5" style={{ color: '#6B6060' }}>{recipe.description}</p>
 
-            {/* Stats row */}
             <div className="flex flex-wrap gap-5 text-sm mb-5" style={{ color: '#6B6060' }}>
-              <div className="flex items-center gap-1.5">
-                <span className="text-lg">⏱</span>
-                <div>
-                  <div className="font-medium">{recipe.prepTime} min</div>
-                  <div className="text-xs" style={{ color: '#8A8070' }}>Prep</div>
+              {[
+                { emoji: '⏱', value: `${recipe.prepTime} min`, label: 'Prep' },
+                { emoji: '🔥', value: `${recipe.cookTime} min`, label: 'Cook' },
+                { emoji: '👥', value: `${recipe.servings}`, label: 'Serves' },
+                { emoji: '📚', value: recipe.homeschoolLesson.subject, label: 'Lesson' },
+              ].map((s) => (
+                <div key={s.label} className="flex items-center gap-1.5">
+                  <span className="text-lg">{s.emoji}</span>
+                  <div>
+                    <div className="font-medium">{s.value}</div>
+                    <div className="text-xs" style={{ color: '#8A8070' }}>{s.label}</div>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-lg">🔥</span>
-                <div>
-                  <div className="font-medium">{recipe.cookTime} min</div>
-                  <div className="text-xs" style={{ color: '#8A8070' }}>Cook</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-lg">👥</span>
-                <div>
-                  <div className="font-medium">{recipe.servings}</div>
-                  <div className="text-xs" style={{ color: '#8A8070' }}>Serves</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-lg">📚</span>
-                <div>
-                  <div className="font-medium">{recipe.homeschoolLesson.subject}</div>
-                  <div className="text-xs" style={{ color: '#8A8070' }}>Lesson</div>
-                </div>
-              </div>
+              ))}
             </div>
 
-            {/* Tags */}
             <div className="flex flex-wrap gap-1.5">
-              {recipe.tags.map((tag) => (
-                <span key={tag} className="text-xs px-2.5 py-1 rounded-full"
-                  style={{ backgroundColor: '#F3EFE9', color: '#8A8070' }}>
-                  #{tag}
-                </span>
-              ))}
+              {recipe.tags.map((tag) => <Badge key={tag} variant="outline">#{tag}</Badge>)}
             </div>
           </div>
         </div>
-      </div>
+      </Card>
 
-      {/* Save / Actions */}
-      <div className="flex gap-3 mb-8">
-        <button
-          onClick={() => setSaved(!saved)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border-2 transition-all"
-          style={{
-            backgroundColor: saved ? '#3B4B3F' : 'transparent',
-            borderColor: '#3B4B3F',
-            color: saved ? '#FFFDF9' : '#3B4B3F',
-          }}>
+      {/* Actions */}
+      <div className="flex flex-wrap gap-3 mb-8">
+        <Button variant={saved ? 'default' : 'outline'} onClick={() => setSaved(!saved)}>
           {saved ? '❤️ Saved!' : '🤍 Save Recipe'}
-        </button>
-        <Link href="/culture-kitchen/grocery-list"
-          className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border-2 transition-all"
-          style={{ borderColor: '#D09E5A', color: '#B08030' }}>
-          🛒 Add to Grocery List
-        </Link>
-        <Link href={`/culture-kitchen/lessons/${recipe.id}`}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border-2 transition-all"
-          style={{ borderColor: '#5A6F5E', color: '#5A6F5E' }}>
-          📚 Open Full Lesson
-        </Link>
+        </Button>
+        <Button asChild variant="outline" style={{ borderColor: '#D09E5A', color: '#B08030' }}>
+          <Link href="/culture-kitchen/grocery-list">🛒 Add to Grocery List</Link>
+        </Button>
+        <Button asChild variant="outline" style={{ borderColor: '#5A6F5E', color: '#5A6F5E' }}>
+          <Link href={`/culture-kitchen/lessons/${recipe.id}`}>📚 Open Full Lesson</Link>
+        </Button>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-8 border-b overflow-x-auto" style={{ borderColor: '#E8DFD0' }}>
-        {tabs.map((tab) => (
-          <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-            className="px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all"
-            style={{
-              borderColor: activeTab === tab.id ? '#3B4B3F' : 'transparent',
-              color: activeTab === tab.id ? '#3B4B3F' : '#8A8070',
-            }}>
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <Tabs defaultValue="recipe">
+        <TabsList>
+          <TabsTrigger value="recipe">🍳 Recipe</TabsTrigger>
+          <TabsTrigger value="lesson">📚 Lesson</TabsTrigger>
+          <TabsTrigger value="nutrition">🥗 Nutrition</TabsTrigger>
+          <TabsTrigger value="history">📖 History</TabsTrigger>
+        </TabsList>
 
-      {/* RECIPE TAB */}
-      {activeTab === 'recipe' && (
-        <div className="grid md:grid-cols-5 gap-8">
-          {/* Ingredients */}
-          <div className="md:col-span-2">
-            <div className="rounded-2xl p-5 border sticky top-24" style={{ backgroundColor: '#FFFDF9', borderColor: '#E8DFD0' }}>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-serif text-xl" style={{ color: '#3B4B3F' }}>Ingredients</h2>
-                <div className="flex items-center gap-2 text-sm">
-                  <button onClick={() => setServings(Math.max(1, servings - 1))}
-                    className="w-7 h-7 rounded-full flex items-center justify-center border font-bold"
-                    style={{ borderColor: '#E8DFD0', color: '#3B4B3F' }}>−</button>
-                  <span className="font-medium w-6 text-center" style={{ color: '#3B4B3F' }}>{servings}</span>
-                  <button onClick={() => setServings(servings + 1)}
-                    className="w-7 h-7 rounded-full flex items-center justify-center border font-bold"
-                    style={{ borderColor: '#E8DFD0', color: '#3B4B3F' }}>+</button>
-                  <span className="text-xs" style={{ color: '#8A8070' }}>servings</span>
-                </div>
-              </div>
-              <ul className="space-y-2.5">
-                {recipe.ingredients.map((ing, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm py-2 border-b last:border-0"
-                    style={{ borderColor: '#F3EFE9' }}>
-                    <span className="w-20 shrink-0 font-medium" style={{ color: '#3B4B3F' }}>
-                      {(() => {
-                        const amt = parseFloat(ing.amount);
-                        if (!isNaN(amt)) return (amt * multiplier % 1 === 0 ? (amt * multiplier).toString() : (amt * multiplier).toFixed(1)) + (ing.unit ? ' ' + ing.unit : '');
-                        return ing.amount + (ing.unit ? ' ' + ing.unit : '');
-                      })()}
-                    </span>
-                    <span style={{ color: '#4A4040' }}>
-                      {ing.name}
-                      {ing.notes && <span className="text-xs ml-1" style={{ color: '#8A8070' }}>({ing.notes})</span>}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Steps */}
-          <div className="md:col-span-3 space-y-4">
-            <h2 className="font-serif text-xl" style={{ color: '#3B4B3F' }}>Instructions</h2>
-            {recipe.steps.map((step) => (
-              <button key={step.step} onClick={() => toggleStep(step.step)}
-                className="w-full text-left p-5 rounded-2xl border transition-all"
-                style={{
-                  backgroundColor: checkedSteps.has(step.step) ? '#F0F5F0' : '#FFFDF9',
-                  borderColor: checkedSteps.has(step.step) ? '#C8D8C4' : '#E8DFD0',
-                  opacity: checkedSteps.has(step.step) ? 0.7 : 1,
-                }}>
-                <div className="flex gap-4 items-start">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-bold text-sm"
-                    style={{
-                      backgroundColor: checkedSteps.has(step.step) ? '#5A6F5E' : '#E8DFD0',
-                      color: checkedSteps.has(step.step) ? '#FFFDF9' : '#3B4B3F',
-                    }}>
-                    {checkedSteps.has(step.step) ? '✓' : step.step}
+        {/* RECIPE */}
+        <TabsContent value="recipe">
+          <div className="grid md:grid-cols-5 gap-8">
+            {/* Ingredients */}
+            <div className="md:col-span-2">
+              <Card className="sticky top-24">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Ingredients</CardTitle>
+                    <div className="flex items-center gap-2 text-sm">
+                      <button
+                        onClick={() => setServings(Math.max(1, servings - 1))}
+                        className="w-7 h-7 rounded-full border flex items-center justify-center font-bold"
+                        style={{ borderColor: '#E8DFD0', color: '#3B4B3F' }}
+                      >−</button>
+                      <span className="w-6 text-center font-medium" style={{ color: '#3B4B3F' }}>{servings}</span>
+                      <button
+                        onClick={() => setServings(servings + 1)}
+                        className="w-7 h-7 rounded-full border flex items-center justify-center font-bold"
+                        style={{ borderColor: '#E8DFD0', color: '#3B4B3F' }}
+                      >+</button>
+                      <span className="text-xs" style={{ color: '#8A8070' }}>servings</span>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm leading-relaxed" style={{
-                      color: '#4A4040',
-                      textDecoration: checkedSteps.has(step.step) ? 'line-through' : 'none',
-                    }}>
-                      {step.instruction}
-                    </p>
-                    {step.tip && (
-                      <div className="mt-2 text-xs px-3 py-2 rounded-lg italic"
-                        style={{ backgroundColor: '#FBF4E8', color: '#B08030' }}>
-                        💡 Tip: {step.tip}
-                      </div>
-                    )}
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-0">
+                    {recipe.ingredients.map((ing, i) => (
+                      <li key={i}>
+                        <div className="flex items-start gap-2 py-2.5 text-sm">
+                          <span className="w-20 shrink-0 font-medium" style={{ color: '#3B4B3F' }}>
+                            {(() => {
+                              const amt = parseFloat(ing.amount);
+                              if (!isNaN(amt)) {
+                                const scaled = amt * multiplier;
+                                return (scaled % 1 === 0 ? scaled.toString() : scaled.toFixed(1)) + (ing.unit ? ' ' + ing.unit : '');
+                              }
+                              return ing.amount + (ing.unit ? ' ' + ing.unit : '');
+                            })()}
+                          </span>
+                          <span style={{ color: '#4A4040' }}>
+                            {ing.name}
+                            {ing.notes && <span className="text-xs ml-1" style={{ color: '#8A8070' }}>({ing.notes})</span>}
+                          </span>
+                        </div>
+                        {i < recipe.ingredients.length - 1 && <Separator />}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Steps */}
+            <div className="md:col-span-3 space-y-4">
+              <h2 className="font-serif text-xl" style={{ color: '#3B4B3F' }}>Instructions</h2>
+              {recipe.steps.map((step) => (
+                <button
+                  key={step.step}
+                  onClick={() => toggleStep(step.step)}
+                  className="w-full text-left p-5 rounded-2xl border transition-all"
+                  style={{
+                    backgroundColor: checkedSteps.has(step.step) ? '#F0F5F0' : '#FFFDF9',
+                    borderColor: checkedSteps.has(step.step) ? '#C8D8C4' : '#E8DFD0',
+                    opacity: checkedSteps.has(step.step) ? 0.7 : 1,
+                  }}
+                >
+                  <div className="flex gap-4 items-start">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-bold text-sm"
+                      style={{
+                        backgroundColor: checkedSteps.has(step.step) ? '#5A6F5E' : '#E8DFD0',
+                        color: checkedSteps.has(step.step) ? '#FFFDF9' : '#3B4B3F',
+                      }}
+                    >
+                      {checkedSteps.has(step.step) ? '✓' : step.step}
+                    </div>
+                    <div className="flex-1">
+                      <p
+                        className="text-sm leading-relaxed"
+                        style={{
+                          color: '#4A4040',
+                          textDecoration: checkedSteps.has(step.step) ? 'line-through' : 'none',
+                        }}
+                      >
+                        {step.instruction}
+                      </p>
+                      {step.tip && (
+                        <div className="mt-2 text-xs px-3 py-2 rounded-lg italic" style={{ backgroundColor: '#FBF4E8', color: '#B08030' }}>
+                          💡 Tip: {step.tip}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              ))}
+
+              {/* Kid Tasks */}
+              <Card style={{ backgroundColor: '#FBF4E8', borderColor: '#E8CFA0' }}>
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <CardTitle className="text-base" style={{ color: '#7A5A20' }}>👶 Kid Helper Tasks</CardTitle>
+                    <Badge variant="gold">Ages {recipe.homeschoolLesson.ageRange}</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-2">
+                    {recipe.kidHelperTasks.map((task, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm" style={{ color: '#7A5A20' }}>
+                        <span className="shrink-0 mt-0.5">⭐</span> {task}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+
+        {/* LESSON */}
+        <TabsContent value="lesson">
+          <div className="space-y-6">
+            <Card style={{ backgroundColor: '#F0F5F0', borderColor: '#C8D8C4' }}>
+              <CardHeader>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-3xl">📚</span>
+                  <div>
+                    <CardTitle>{recipe.homeschoolLesson.subject} Lesson</CardTitle>
+                    <CardDescription>Ages {recipe.homeschoolLesson.ageRange} • {recipe.homeschoolLesson.duration} minutes</CardDescription>
                   </div>
                 </div>
-              </button>
-            ))}
-
-            {/* Kid Helper Tasks */}
-            <div className="rounded-2xl p-5 border mt-6"
-              style={{ backgroundColor: '#FBF4E8', borderColor: '#E8CFA0' }}>
-              <h3 className="font-semibold mb-3 flex items-center gap-2" style={{ color: '#7A5A20' }}>
-                👶 Kid Helper Tasks
-                <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: '#D09E5A', color: '#FFFDF9' }}>
-                  Ages {recipe.homeschoolLesson.ageRange}
-                </span>
-              </h3>
-              <ul className="space-y-2">
-                {recipe.kidHelperTasks.map((task, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm" style={{ color: '#7A5A20' }}>
-                    <span className="shrink-0 mt-0.5">⭐</span>
-                    {task}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* LESSON TAB */}
-      {activeTab === 'lesson' && (
-        <div className="space-y-6">
-          <div className="rounded-2xl p-6 border" style={{ backgroundColor: '#F0F5F0', borderColor: '#C8D8C4' }}>
-            <div className="flex flex-wrap items-center gap-3 mb-4">
-              <span className="text-3xl">📚</span>
-              <div>
-                <div className="font-serif text-xl" style={{ color: '#3B4B3F' }}>{recipe.homeschoolLesson.subject} Lesson</div>
-                <div className="text-sm" style={{ color: '#5A6F5E' }}>
-                  Ages {recipe.homeschoolLesson.ageRange} • {recipe.homeschoolLesson.duration} minutes
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-xl p-4" style={{ backgroundColor: '#FFFDF9' }}>
+                  <p className="text-sm leading-relaxed" style={{ color: '#4A4040' }}>
+                    <strong>Activity:</strong> {recipe.homeschoolLesson.activity}
+                  </p>
                 </div>
-              </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid md:grid-cols-2 gap-5">
+              <Card>
+                <CardHeader><CardTitle className="text-base">💬 Discussion Questions</CardTitle></CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {recipe.homeschoolLesson.discussion.map((q, i) => (
+                      <li key={i} className="text-sm p-3 rounded-xl" style={{ backgroundColor: '#F3EFE9', color: '#4A4040' }}>
+                        <span className="font-medium mr-1">{i + 1}.</span> {q}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle className="text-base">🌟 Fun Facts</CardTitle></CardHeader>
+                <CardContent>
+                  <ul className="space-y-3">
+                    {recipe.homeschoolLesson.funFacts.map((fact, i) => (
+                      <li key={i} className="text-sm p-3 rounded-xl flex gap-2" style={{ backgroundColor: '#FBF4E8', color: '#6A4A20' }}>
+                        <span>🌟</span> {fact}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
-            <div className="rounded-xl p-4" style={{ backgroundColor: '#FFFDF9' }}>
-              <p className="text-sm leading-relaxed" style={{ color: '#4A4040' }}>
-                <strong>Activity:</strong> {recipe.homeschoolLesson.activity}
-              </p>
-            </div>
+
+            <Card>
+              <CardHeader><CardTitle className="text-base">📝 Vocabulary Words</CardTitle></CardHeader>
+              <CardContent>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {recipe.homeschoolLesson.vocabulary.map((vocab) => (
+                    <div key={vocab.word} className="p-4 rounded-xl border" style={{ backgroundColor: '#F3EFE9', borderColor: '#E8DFD0' }}>
+                      <div className="font-semibold text-sm mb-1" style={{ color: '#3B4B3F' }}>{vocab.word}</div>
+                      <div className="text-xs leading-relaxed" style={{ color: '#6B6060' }}>{vocab.definition}</div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Button asChild>
+              <Link href={`/culture-kitchen/lessons/${recipe.id}`}>📖 Open Full Lesson Page →</Link>
+            </Button>
           </div>
+        </TabsContent>
 
-          <div className="grid md:grid-cols-2 gap-5">
-            {/* Discussion */}
-            <div className="rounded-2xl p-5 border" style={{ backgroundColor: '#FFFDF9', borderColor: '#E8DFD0' }}>
-              <h3 className="font-semibold mb-3 flex items-center gap-2" style={{ color: '#3B4B3F' }}>
-                💬 Discussion Questions
-              </h3>
-              <ul className="space-y-3">
-                {recipe.homeschoolLesson.discussion.map((q, i) => (
-                  <li key={i} className="text-sm p-3 rounded-xl" style={{ backgroundColor: '#F3EFE9', color: '#4A4040' }}>
-                    <span className="font-medium mr-1">{i + 1}.</span> {q}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Fun Facts */}
-            <div className="rounded-2xl p-5 border" style={{ backgroundColor: '#FFFDF9', borderColor: '#E8DFD0' }}>
-              <h3 className="font-semibold mb-3 flex items-center gap-2" style={{ color: '#3B4B3F' }}>
-                🌟 Fun Facts
-              </h3>
-              <ul className="space-y-3">
-                {recipe.homeschoolLesson.funFacts.map((fact, i) => (
-                  <li key={i} className="text-sm p-3 rounded-xl flex gap-2"
-                    style={{ backgroundColor: '#FBF4E8', color: '#6A4A20' }}>
-                    <span>🌟</span> {fact}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Vocabulary */}
-          <div className="rounded-2xl p-5 border" style={{ backgroundColor: '#FFFDF9', borderColor: '#E8DFD0' }}>
-            <h3 className="font-semibold mb-4" style={{ color: '#3B4B3F' }}>📝 Vocabulary Words</h3>
-            <div className="grid sm:grid-cols-2 gap-3">
-              {recipe.homeschoolLesson.vocabulary.map((vocab) => (
-                <div key={vocab.word} className="p-4 rounded-xl border" style={{ backgroundColor: '#F3EFE9', borderColor: '#E8DFD0' }}>
-                  <div className="font-semibold text-sm mb-1" style={{ color: '#3B4B3F' }}>{vocab.word}</div>
-                  <div className="text-xs leading-relaxed" style={{ color: '#6B6060' }}>{vocab.definition}</div>
+        {/* NUTRITION */}
+        <TabsContent value="nutrition">
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {[
+                { label: 'Calories', value: Math.round(recipe.nutritionFacts.calories * multiplier), unit: 'kcal', bg: '#F5E8E8' },
+                { label: 'Protein', value: Math.round(recipe.nutritionFacts.protein * multiplier), unit: 'g', bg: '#E8F0E8' },
+                { label: 'Carbs', value: Math.round(recipe.nutritionFacts.carbs * multiplier), unit: 'g', bg: '#FBF4E8' },
+                { label: 'Fat', value: Math.round(recipe.nutritionFacts.fat * multiplier), unit: 'g', bg: '#F3EFE9' },
+                { label: 'Fiber', value: Math.round(recipe.nutritionFacts.fiber * multiplier), unit: 'g', bg: '#E8EDF5' },
+              ].map((fact) => (
+                <div key={fact.label} className="rounded-2xl p-4 text-center" style={{ backgroundColor: fact.bg }}>
+                  <div className="text-2xl font-bold font-serif mb-1" style={{ color: '#3B4B3F' }}>
+                    {fact.value}<span className="text-sm font-sans ml-0.5">{fact.unit}</span>
+                  </div>
+                  <div className="text-xs" style={{ color: '#6B6060' }}>{fact.label}</div>
                 </div>
               ))}
             </div>
+            <p className="text-xs" style={{ color: '#8A8070' }}>*Values shown for {servings} serving{servings !== 1 ? 's' : ''}.</p>
+            <Card>
+              <CardHeader><CardTitle className="text-base">🌿 Nutrition Notes</CardTitle></CardHeader>
+              <CardContent>
+                <p className="text-sm leading-relaxed" style={{ color: '#4A4040' }}>{recipe.nutritionNotes}</p>
+              </CardContent>
+            </Card>
           </div>
+        </TabsContent>
 
-          <Link href={`/culture-kitchen/lessons/${recipe.id}`}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium"
-            style={{ backgroundColor: '#3B4B3F', color: '#FFFDF9' }}>
-            📖 Open Full Lesson Page →
-          </Link>
-        </div>
-      )}
-
-      {/* NUTRITION TAB */}
-      {activeTab === 'nutrition' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {[
-              { label: 'Calories', value: Math.round(recipe.nutritionFacts.calories * multiplier), unit: 'kcal', color: '#F5E8E8' },
-              { label: 'Protein', value: Math.round(recipe.nutritionFacts.protein * multiplier), unit: 'g', color: '#E8F0E8' },
-              { label: 'Carbs', value: Math.round(recipe.nutritionFacts.carbs * multiplier), unit: 'g', color: '#FBF4E8' },
-              { label: 'Fat', value: Math.round(recipe.nutritionFacts.fat * multiplier), unit: 'g', color: '#F3EFE9' },
-              { label: 'Fiber', value: Math.round(recipe.nutritionFacts.fiber * multiplier), unit: 'g', color: '#E8EDF5' },
-            ].map((fact) => (
-              <div key={fact.label} className="rounded-2xl p-4 text-center" style={{ backgroundColor: fact.color }}>
-                <div className="text-2xl font-bold font-serif mb-1" style={{ color: '#3B4B3F' }}>
-                  {fact.value}<span className="text-sm font-sans ml-0.5">{fact.unit}</span>
-                </div>
-                <div className="text-xs" style={{ color: '#6B6060' }}>{fact.label}</div>
-              </div>
-            ))}
-          </div>
-          <p className="text-xs" style={{ color: '#8A8070' }}>
-            *Values shown for {servings} serving{servings !== 1 ? 's' : ''}. Adjust servings above.
-          </p>
-
-          <div className="rounded-2xl p-6 border" style={{ backgroundColor: '#FFFDF9', borderColor: '#E8DFD0' }}>
-            <h3 className="font-semibold mb-3" style={{ color: '#3B4B3F' }}>🌿 Nutrition Notes</h3>
-            <p className="text-sm leading-relaxed" style={{ color: '#4A4040' }}>{recipe.nutritionNotes}</p>
-          </div>
-        </div>
-      )}
-
-      {/* HISTORY TAB */}
-      {activeTab === 'history' && (
-        <div className="space-y-6">
-          <div className="rounded-2xl p-8 border" style={{ backgroundColor: '#FFFDF9', borderColor: '#E8DFD0' }}>
-            <h2 className="font-serif text-2xl mb-5" style={{ color: '#3B4B3F' }}>
-              📖 The Story of {recipe.name}
-            </h2>
-            <p className="text-base leading-loose" style={{ color: '#4A4040' }}>
-              {recipe.culturalHistory}
-            </p>
-          </div>
-
-          {recipe.aiHint && (
-            <div className="rounded-2xl p-6 border-2 border-dashed"
-              style={{ borderColor: '#D09E5A', backgroundColor: '#FBF4E8' }}>
-              <div className="flex items-start gap-4">
-                <div className="text-3xl">✨</div>
-                <div>
-                  <div className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: '#D09E5A' }}>
-                    AI Personalization — Coming Soon
+        {/* HISTORY */}
+        <TabsContent value="history">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader><CardTitle className="text-2xl">📖 The Story of {recipe.name}</CardTitle></CardHeader>
+              <CardContent>
+                <p className="text-base leading-loose" style={{ color: '#4A4040' }}>{recipe.culturalHistory}</p>
+              </CardContent>
+            </Card>
+            {recipe.aiHint && (
+              <Card className="border-2 border-dashed" style={{ borderColor: '#D09E5A', backgroundColor: '#FBF4E8' }}>
+                <CardContent className="pt-6">
+                  <div className="flex items-start gap-4">
+                    <span className="text-3xl">✨</span>
+                    <div>
+                      <Badge variant="gold" className="mb-2 text-xs tracking-widest uppercase">AI Personalization — Coming Soon</Badge>
+                      <p className="text-sm" style={{ color: '#8A8070' }}>{recipe.aiHint}</p>
+                    </div>
                   </div>
-                  <p className="text-sm" style={{ color: '#8A8070' }}>{recipe.aiHint}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-3">
-            <Link href={`/culture-kitchen/cultures/${recipe.cultureId}`}
-              className="px-5 py-2.5 rounded-full text-sm font-medium border-2 transition-all"
-              style={{ borderColor: '#5A6F5E', color: '#5A6F5E' }}>
-              ← Back to {recipe.cultureName} Culture
-            </Link>
+                </CardContent>
+              </Card>
+            )}
+            <Button asChild variant="outline">
+              <Link href={`/culture-kitchen/cultures/${recipe.cultureId}`}>← Back to {recipe.cultureName} Culture</Link>
+            </Button>
           </div>
-        </div>
-      )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
