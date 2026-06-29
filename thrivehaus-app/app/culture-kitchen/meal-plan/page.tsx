@@ -11,6 +11,12 @@ import {
   sampleIndianPlan,
   sampleSouthernPlan,
   sampleMediterraneanPlan,
+  sampleJapanesePlan,
+  sampleKoreanPlan,
+  sampleWestAfricanPlan,
+  sampleEthiopianPlan,
+  sampleBrazilianPlan,
+  sampleMoroccanPlan,
 } from '@/lib/culture-kitchen/meal-plans';
 import { AGE_RANGES, DIETARY_OPTIONS, BUDGET_OPTIONS } from '@/lib/culture-kitchen/family-profile';
 import type { MealPlan } from '@/lib/culture-kitchen/types';
@@ -23,6 +29,12 @@ const MEAL_PLANS_BY_CULTURE: Record<string, MealPlan> = {
   indian: sampleIndianPlan,
   southern: sampleSouthernPlan,
   mediterranean: sampleMediterraneanPlan,
+  japanese: sampleJapanesePlan,
+  korean: sampleKoreanPlan,
+  'west-african': sampleWestAfricanPlan,
+  ethiopian: sampleEthiopianPlan,
+  brazilian: sampleBrazilianPlan,
+  moroccan: sampleMoroccanPlan,
 };
 
 export default function MealPlanPage() {
