@@ -4,6 +4,7 @@ import { getFeaturedRecipes } from '@/lib/culture-kitchen/recipes';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import CKJourney from '@/components/culture-kitchen/CKJourney';
 
 export default function CultureKitchenHome() {
   const featured = getFeaturedRecipes().slice(0, 4);
@@ -66,6 +67,9 @@ export default function CultureKitchenHome() {
           </Card>
         ))}
       </section>
+
+      {/* Journey tracker — only shows after first culture visited */}
+      <CKJourney />
 
       {/* Featured Cultures */}
       <section className="mb-14">

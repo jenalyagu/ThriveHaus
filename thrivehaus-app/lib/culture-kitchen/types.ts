@@ -1,3 +1,12 @@
+export interface CultureConnection {
+  cultureId: string;
+  strength: 'strong' | 'moderate';
+  linkType: 'colonization' | 'trade' | 'migration' | 'empire' | 'geography' | 'ingredient';
+  headline: string;
+  detail: string;
+  sharedIngredients: string[];
+}
+
 export interface Culture {
   id: string;
   name: string;
@@ -17,6 +26,7 @@ export interface Culture {
   mapFact: string;
   languages: string[];
   population: string;
+  connections: CultureConnection[];
 }
 
 export interface Ingredient {

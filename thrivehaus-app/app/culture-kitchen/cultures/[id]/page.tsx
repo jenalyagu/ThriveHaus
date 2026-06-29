@@ -1,21 +1,36 @@
 'use client';
 
-import { use } from 'react';
+import { use, useEffect } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getCultureById } from '@/lib/culture-kitchen/cultures';
+import { getCultureById, cultures } from '@/lib/culture-kitchen/cultures';
 import { getRecipesByCulture } from '@/lib/culture-kitchen/recipes';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { markCultureVisited, useVisitedCultures } from '@/components/culture-kitchen/CKJourney';
+
+const LINK_TYPE_META: Record<string, { icon: string; label: string; bg: string }> = {
+  colonization: { icon: '⚔️', label: 'Colonial history', bg: '#F5ECD8' },
+  trade:        { icon: '🚢', label: 'Trade route',      bg: '#E8F0D8' },
+  migration:    { icon: '🌍', label: 'Migration',        bg: '#EAE0F5' },
+  empire:       { icon: '👑', label: 'Shared empire',    bg: '#F5ECD8' },
+  geography:    { icon: '🗺', label: 'Neighbors',        bg: '#D8EEF0' },
+  ingredient:   { icon: '🌱', label: 'Shared roots',     bg: '#F0D8E8' },
+};
 
 export default function CultureDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const culture = getCultureById(id);
   if (!culture) notFound();
   const recipes = getRecipesByCulture(id);
+  const visited = useVisitedCultures();
+
+  useEffect(() => {
+    markCultureVisited(id);
+  }, [id]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -122,6 +137,71 @@ export default function CultureDetailPage({ params }: { params: Promise<{ id: st
                 </div>
               </CardContent>
             </Card>
+
+            {/* Cultural Connections */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-serif text-xl font-semibold" style={{ color: '#3B4B3F' }}>
+                  🔗 Cultural Connections
+                </h3>
+                <Badge variant="sage">{culture.connections.length} links</Badge>
+              </div>
+              <div className="space-y-4">
+                {culture.connections.map((conn) => {
+                  const linked = cultures.find((c) => c.id === conn.cultureId)!;
+                  const meta = LINK_TYPE_META[conn.linkType];
+                  const isVisited = visited.includes(conn.cultureId);
+                  return (
+                    <Card
+                      key={conn.cultureId}
+                      className="overflow-hidden hover:shadow-[0_8px_24px_rgba(59,75,63,0.1)] hover:-translate-y-0.5 transition-all duration-300"
+                    >
+                      <div className="flex items-center gap-3 px-5 py-3 border-b" style={{ backgroundColor: meta.bg, borderColor: '#E8DFD0' }}>
+                        <span className="text-2xl">{linked.emoji}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-bold text-sm" style={{ color: '#3B4B3F' }}>{linked.name}</span>
+                            <Badge variant={conn.strength === 'strong' ? 'sage' : 'default'} className="text-xs">
+                              {conn.strength === 'strong' ? '●● Strong' : '● Moderate'}
+                            </Badge>
+                            <span className="text-xs font-medium" style={{ color: '#6B6060' }}>
+                              {meta.icon} {meta.label}
+                            </span>
+                          </div>
+                          <p className="text-xs font-semibold mt-0.5" style={{ color: '#5A6F5E' }}>{conn.headline}</p>
+                        </div>
+                        {isVisited && (
+                          <span className="text-xs font-bold shrink-0 px-2 py-1 rounded-full" style={{ backgroundColor: '#D6E8D6', color: '#2A4A2E' }}>
+                            ✓ Explored
+                          </span>
+                        )}
+                      </div>
+                      <div className="px-5 py-4">
+                        <p className="text-sm leading-relaxed mb-3" style={{ color: '#6B6060' }}>{conn.detail}</p>
+                        <div className="flex items-center justify-between flex-wrap gap-3">
+                          <div className="flex flex-wrap gap-1.5">
+                            {conn.sharedIngredients.map((ing) => (
+                              <span
+                                key={ing}
+                                className="text-xs px-2.5 py-1 rounded-full font-medium"
+                                style={{ backgroundColor: '#EDE7DC', color: '#4A5E4E' }}
+                              >
+                                {ing}
+                              </span>
+                            ))}
+                          </div>
+                          <Button asChild variant="ghost" size="sm">
+                            <Link href={`/culture-kitchen/cultures/${conn.cultureId}`}>
+                              {isVisited ? 'Revisit' : 'Explore'} {linked.name} →
+                            </Link>
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* AI teaser */}
             <Card className="border-2 border-dashed" style={{ borderColor: '#D09E5A', background: 'linear-gradient(135deg, #FBF4E8, #F5E8D0)' }}>
