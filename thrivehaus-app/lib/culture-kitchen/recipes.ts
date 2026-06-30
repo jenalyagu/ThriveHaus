@@ -986,3 +986,7 @@ export function getRecipeById(id: string): Recipe | undefined {
 export function getRecipesByCulture(cultureId: string): Recipe[] {
   return recipes.filter((r) => r.cultureId === cultureId);
 }
+
+export function getFeaturedRecipes(): Recipe[] {
+  return recipes.filter((r) => r.isFeatured);
+}

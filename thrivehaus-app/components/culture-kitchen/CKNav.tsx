@@ -2,69 +2,114 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Globe, BookOpen, Calendar, ShoppingCart, Bookmark, Users } from 'lucide-react';
+import { useState } from 'react';
 
-const navItems = [
-  { href: '/culture-kitchen', label: 'Home', icon: Home, exact: true },
-  { href: '/culture-kitchen/cultures', label: 'Cultures', icon: Globe },
-  { href: '/culture-kitchen/meal-plan', label: 'Meal Plan', icon: Calendar },
-  { href: '/culture-kitchen/grocery-list', label: 'Grocery', icon: ShoppingCart },
-  { href: '/culture-kitchen/saved-meals', label: 'Saved', icon: Bookmark },
-  { href: '/culture-kitchen/family-profile', label: 'Family', icon: Users },
+const navLinks = [
+  { href: '/culture-kitchen', label: 'Home', emoji: '🏠' },
+  { href: '/culture-kitchen/cultures', label: 'Cultures', emoji: '🌍' },
+  { href: '/culture-kitchen/meal-plan', label: 'Meal Plan', emoji: '📅' },
+  { href: '/culture-kitchen/grocery-list', label: 'Grocery', emoji: '🛒' },
+  { href: '/culture-kitchen/saved-meals', label: 'Saved', emoji: '❤️' },
+  { href: '/culture-kitchen/family-profile', label: 'Family', emoji: '👨‍👩‍👧‍👦' },
 ];
 
 export default function CKNav() {
   const pathname = usePathname();
-
-  function isActive(item: typeof navItems[0]) {
-    if (item.exact) return pathname === item.href;
-    return pathname.startsWith(item.href);
-  }
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <>
-      {/* Desktop sidebar */}
-      <nav className="hidden md:flex flex-col gap-1 w-48 shrink-0">
-        <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-sage)] px-3 mb-2">
-          Culture Kitchen
-        </p>
-        {navItems.map((item) => {
-          const active = isActive(item);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
-                active
-                  ? 'bg-[var(--color-terracotta)] text-white'
-                  : 'text-[var(--color-charcoal)] hover:bg-[var(--color-sand)]'
-              }`}
-            >
-              <item.icon size={16} />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+    <nav
+      className="sticky top-0 z-50 border-b"
+      style={{
+        backgroundColor: '#FFFDF9',
+        borderColor: '#E8DFD0',
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/culture-kitchen" className="flex items-center gap-2 shrink-0">
+            <span className="text-2xl">🍳</span>
+            <div className="leading-tight">
+              <div
+                className="font-serif font-semibold text-base leading-none"
+                style={{ color: '#3B4B3F' }}
+              >
+                Culture Kitchen
+              </div>
+              <div className="text-xs font-sans" style={{ color: '#5A6F5E' }}>
+                ™ by ThriveHaus
+              </div>
+            </div>
+          </Link>
 
-      {/* Mobile bottom tab bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-t border-[var(--color-sand)] flex">
-        {navItems.map((item) => {
-          const active = isActive(item);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition-colors ${
-                active ? 'text-[var(--color-terracotta)]' : 'text-[var(--color-sage)]'
-              }`}
-            >
-              <item.icon size={20} />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
-    </>
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-1">
+            {navLinks.map((link) => {
+              const active =
+                link.href === '/culture-kitchen'
+                  ? pathname === '/culture-kitchen'
+                  : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-all"
+                  style={{
+                    backgroundColor: active ? '#3B4B3F' : 'transparent',
+                    color: active ? '#FFFDF9' : '#5A6F5E',
+                  }}
+                >
+                  <span>{link.emoji}</span>
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden p-2 rounded-lg"
+            style={{ color: '#3B4B3F' }}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {menuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="md:hidden border-t px-4 py-3 space-y-1" style={{ borderColor: '#E8DFD0', backgroundColor: '#FFFDF9' }}>
+          {navLinks.map((link) => {
+            const active =
+              link.href === '/culture-kitchen'
+                ? pathname === '/culture-kitchen'
+                : pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all"
+                style={{
+                  backgroundColor: active ? '#3B4B3F' : 'transparent',
+                  color: active ? '#FFFDF9' : '#3B4B3F',
+                }}
+              >
+                <span className="text-lg">{link.emoji}</span>
+                {link.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </nav>
   );
 }

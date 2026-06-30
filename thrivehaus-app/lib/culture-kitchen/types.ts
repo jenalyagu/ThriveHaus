@@ -31,7 +31,7 @@ export interface Culture {
 
 export interface Ingredient {
   name: string;
-  amount?: string;
+  amount: string;
   unit?: string;
   notes?: string;
 }
@@ -118,6 +118,8 @@ export interface MealPlan {
 export interface GroceryItem {
   name: string;
   amount: string;
+  unit?: string;
   category: string;
   recipeIds: string[];
+  recipeNames: string[];
 }

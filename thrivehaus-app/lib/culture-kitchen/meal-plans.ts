@@ -289,16 +289,18 @@ export const mealPlans = [
   sampleMoroccanPlan,
 ];
 
-const groceryListFromPlan: GroceryItem[] = [
-  { name: 'Chicken thighs', amount: '3 lbs', category: 'Protein', recipeIds: ['adobo'] },
-  { name: 'Soy sauce', amount: '1 bottle', category: 'Pantry', recipeIds: ['adobo'] },
-  { name: 'White vinegar', amount: '1 bottle', category: 'Pantry', recipeIds: ['adobo'] },
-  { name: 'Garlic', amount: '2 heads', category: 'Produce', recipeIds: ['adobo', 'sinigang'] },
-  { name: 'Jasmine rice', amount: '5 lbs', category: 'Pantry', recipeIds: ['adobo', 'sinigang'] },
-  { name: 'Pork ribs', amount: '2 lbs', category: 'Protein', recipeIds: ['sinigang'] },
-  { name: 'Tamarind paste', amount: '1 package', category: 'Pantry', recipeIds: ['sinigang'] },
-  { name: 'Bok choy', amount: '1 bunch', category: 'Produce', recipeIds: ['sinigang'] },
-  { name: 'Tomatoes', amount: '4', category: 'Produce', recipeIds: ['sinigang'] },
+export const groceryListFromPlan: GroceryItem[] = [
+  { name: 'Chicken thighs', amount: '3', unit: 'lbs', category: 'Meat & Seafood', recipeIds: ['adobo'], recipeNames: ['Chicken Adobo'] },
+  { name: 'Soy sauce', amount: '1 bottle', category: 'Pantry', recipeIds: ['adobo'], recipeNames: ['Chicken Adobo'] },
+  { name: 'White vinegar', amount: '1 bottle', category: 'Pantry', recipeIds: ['adobo'], recipeNames: ['Chicken Adobo'] },
+  { name: 'Garlic', amount: '2 heads', category: 'Produce', recipeIds: ['adobo', 'sinigang'], recipeNames: ['Chicken Adobo', 'Pork Sinigang'] },
+  { name: 'Jasmine rice', amount: '5', unit: 'lbs', category: 'Pasta & Grains', recipeIds: ['adobo', 'sinigang'], recipeNames: ['Chicken Adobo', 'Pork Sinigang'] },
+  { name: 'Pork ribs', amount: '2', unit: 'lbs', category: 'Meat & Seafood', recipeIds: ['sinigang'], recipeNames: ['Pork Sinigang'] },
+  { name: 'Tamarind paste', amount: '1 package', category: 'Pantry', recipeIds: ['sinigang'], recipeNames: ['Pork Sinigang'] },
+  { name: 'Bok choy', amount: '1 bunch', category: 'Produce', recipeIds: ['sinigang'], recipeNames: ['Pork Sinigang'] },
+  { name: 'Tomatoes', amount: '4', category: 'Produce', recipeIds: ['sinigang'], recipeNames: ['Pork Sinigang'] },
+  { name: 'Fish sauce', amount: '1 bottle', category: 'Pantry', recipeIds: ['sinigang'], recipeNames: ['Pork Sinigang'] },
+  { name: 'Bay leaves', amount: '1 pack', category: 'Pantry', recipeIds: ['adobo'], recipeNames: ['Chicken Adobo'] },
 ];
 
 export function generateGroceryList(): GroceryItem[] {
