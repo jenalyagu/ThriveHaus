@@ -99,7 +99,7 @@
 
 /* ──────────────────── COUNTER ANIMATION ──────────────────── */
 (function initCounters() {
-  const counters = document.querySelectorAll('[data-target]');
+  const counters = document.querySelectorAll('.proof-count[data-target]');
   if (!counters.length) return;
 
   function easeOutCubic(t) {
@@ -428,4 +428,64 @@
   cards.forEach((card, i) => {
     card.style.setProperty('--delay', `${0.1 + i * 0.12}s`);
   });
+})();
+
+
+/* ──────────────────── WAYFINDER CARDS ──────────────────── */
+(function initWayfinder() {
+  document.querySelectorAll('.wayfinder-card[data-target]').forEach(card => {
+    card.addEventListener('click', () => {
+      const target = document.querySelector(card.dataset.target);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+})();
+
+
+/* ──────────────────── MOBILE STICKY CTA ──────────────────── */
+(function initMobileStickyCta() {
+  const cta = document.getElementById('mobile-sticky-cta');
+  const hero = document.querySelector('.hero-section');
+  const intake = document.getElementById('intake');
+  if (!cta || !hero) return;
+
+  // Add bottom padding to body so sticky bar doesn't cover content
+  const addPadding = () => {
+    if (window.innerWidth < 640) {
+      document.body.style.paddingBottom = cta.offsetHeight + 'px';
+    } else {
+      document.body.style.paddingBottom = '';
+    }
+  };
+
+  function onScroll() {
+    if (window.innerWidth >= 640) return;
+
+    const heroBottom = hero.getBoundingClientRect().bottom;
+    const intakeTop = intake ? intake.getBoundingClientRect().top : Infinity;
+
+    // Show after hero is scrolled past; hide once intake form is visible
+    const pastHero = heroBottom < 0;
+    const atIntake = intakeTop < window.innerHeight * 0.5;
+
+    if (pastHero && !atIntake) {
+      cta.classList.remove('is-hidden');
+      cta.setAttribute('aria-hidden', 'false');
+    } else {
+      cta.classList.add('is-hidden');
+      cta.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  // Hide sticky CTA when any of its links are clicked
+  cta.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      cta.classList.add('is-hidden');
+    });
+  });
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', addPadding, { passive: true });
+  addPadding();
+  onScroll();
 })();
