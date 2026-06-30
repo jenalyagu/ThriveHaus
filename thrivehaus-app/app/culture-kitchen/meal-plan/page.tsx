@@ -3,13 +3,38 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { cultures } from '@/lib/culture-kitchen/cultures';
-import { sampleMealPlan, sampleMexicanPlan } from '@/lib/culture-kitchen/meal-plans';
+import {
+  sampleMealPlan,
+  sampleMexicanPlan,
+  sampleVietnamesePlan,
+  samplePersianPlan,
+  sampleIndianPlan,
+  sampleSouthernPlan,
+  sampleMediterraneanPlan,
+  sampleJapanesePlan,
+  sampleKoreanPlan,
+  sampleWestAfricanPlan,
+  sampleEthiopianPlan,
+  sampleBrazilianPlan,
+  sampleMoroccanPlan,
+} from '@/lib/culture-kitchen/meal-plans';
 import { AGE_RANGES, DIETARY_OPTIONS, BUDGET_OPTIONS } from '@/lib/culture-kitchen/family-profile';
 import type { MealPlan } from '@/lib/culture-kitchen/types';
 
 const MEAL_PLANS_BY_CULTURE: Record<string, MealPlan> = {
   filipino: sampleMealPlan,
   mexican: sampleMexicanPlan,
+  vietnamese: sampleVietnamesePlan,
+  persian: samplePersianPlan,
+  indian: sampleIndianPlan,
+  southern: sampleSouthernPlan,
+  mediterranean: sampleMediterraneanPlan,
+  japanese: sampleJapanesePlan,
+  korean: sampleKoreanPlan,
+  'west-african': sampleWestAfricanPlan,
+  ethiopian: sampleEthiopianPlan,
+  brazilian: sampleBrazilianPlan,
+  moroccan: sampleMoroccanPlan,
 };
 
 export default function MealPlanPage() {
@@ -25,7 +50,7 @@ export default function MealPlanPage() {
   const handleGenerate = () => {
     setGenerating(true);
     setTimeout(() => {
-      const plan = MEAL_PLANS_BY_CULTURE[selectedCulture] || sampleMealPlan;
+      const plan = MEAL_PLANS_BY_CULTURE[selectedCulture] ?? sampleMealPlan;
       setGenerated({ ...plan, servings: familySize, estimatedCost: budget * 0.85 });
       setGenerating(false);
     }, 1200);
