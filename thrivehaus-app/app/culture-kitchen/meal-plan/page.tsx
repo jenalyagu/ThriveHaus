@@ -305,7 +305,7 @@ export default function MealPlanPage() {
                       AI Personalization — Coming Soon
                     </div>
                     <p className="text-sm" style={{ color: '#8A8070' }}>
-                      Future versions will use Claude AI to generate custom {generated.cultureName} recipes
+                      Future versions will use Claude AI to generate custom {generated.cultureName}{' '}recipes
                       tailored exactly to your family&apos;s pantry, budget, and dietary needs — with homeschool
                       lessons matched to your children&apos;s grade level.
                     </p>
