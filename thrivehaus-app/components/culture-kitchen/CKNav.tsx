@@ -37,9 +37,9 @@ export default function CKNav() {
               >
                 Culture Kitchen
               </div>
-              <div className="text-xs font-sans" style={{ color: '#5A6F5E' }}>
+              <Link href="/dashboard" className="text-xs font-sans hover:underline" style={{ color: '#5A6F5E' }}>
                 ™ by ThriveHaus
-              </div>
+              </Link>
             </div>
           </Link>
 
