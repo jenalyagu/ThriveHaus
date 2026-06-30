@@ -18,6 +18,7 @@ function RecipeDetail({ recipe }: { recipe: NonNullable<ReturnType<typeof getRec
   const [checkedSteps, setCheckedSteps] = useState<Set<number>>(new Set());
   const [servings, setServings] = useState(recipe.servings);
   const [saved, setSaved] = useState(false);
+  const [lessonOpen, setLessonOpen] = useState(true);
 
   const multiplier = servings / recipe.servings;
 
@@ -253,6 +254,90 @@ function RecipeDetail({ recipe }: { recipe: NonNullable<ReturnType<typeof getRec
                   </li>
                 ))}
               </ul>
+            </div>
+
+            {/* Homeschool Lesson Card */}
+            <div className="rounded-2xl border mt-6 overflow-hidden" style={{ borderColor: '#C8D8C4' }}>
+              <button
+                onClick={() => setLessonOpen((o) => !o)}
+                className="w-full flex items-center justify-between px-5 py-4 text-left"
+                style={{ backgroundColor: '#F0F5F0' }}>
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">📚</span>
+                  <div>
+                    <div className="font-semibold text-sm" style={{ color: '#3B4B3F' }}>
+                      {recipe.homeschoolLesson.subject} Lesson
+                    </div>
+                    <div className="text-xs" style={{ color: '#5A6F5E' }}>
+                      Ages {recipe.homeschoolLesson.ageRange} · {recipe.homeschoolLesson.duration} min
+                    </div>
+                  </div>
+                </div>
+                <span className="text-lg" style={{ color: '#5A6F5E' }}>{lessonOpen ? '▲' : '▼'}</span>
+              </button>
+
+              {lessonOpen && (
+                <div className="p-5 space-y-5" style={{ backgroundColor: '#FFFDF9' }}>
+                  {/* Activity */}
+                  <div className="rounded-xl p-4" style={{ backgroundColor: '#F0F5F0' }}>
+                    <p className="text-sm leading-relaxed" style={{ color: '#4A4040' }}>
+                      <strong>Activity:</strong> {recipe.homeschoolLesson.activity}
+                    </p>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {/* Discussion */}
+                    <div>
+                      <h4 className="font-semibold text-sm mb-2 flex items-center gap-1.5" style={{ color: '#3B4B3F' }}>
+                        💬 Discussion Questions
+                      </h4>
+                      <ul className="space-y-2">
+                        {recipe.homeschoolLesson.discussion.map((q, i) => (
+                          <li key={i} className="text-xs p-2.5 rounded-lg" style={{ backgroundColor: '#F3EFE9', color: '#4A4040' }}>
+                            <span className="font-medium mr-1">{i + 1}.</span>{q}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Fun Facts */}
+                    <div>
+                      <h4 className="font-semibold text-sm mb-2 flex items-center gap-1.5" style={{ color: '#3B4B3F' }}>
+                        🌟 Fun Facts
+                      </h4>
+                      <ul className="space-y-2">
+                        {recipe.homeschoolLesson.funFacts.map((fact, i) => (
+                          <li key={i} className="text-xs p-2.5 rounded-lg flex gap-1.5"
+                            style={{ backgroundColor: '#FBF4E8', color: '#6A4A20' }}>
+                            <span className="shrink-0">🌟</span>{fact}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Vocabulary */}
+                  <div>
+                    <h4 className="font-semibold text-sm mb-2" style={{ color: '#3B4B3F' }}>📝 Vocabulary</h4>
+                    <div className="grid sm:grid-cols-3 gap-2">
+                      {recipe.homeschoolLesson.vocabulary.map((vocab) => (
+                        <div key={vocab.word} className="p-3 rounded-xl border"
+                          style={{ backgroundColor: '#F3EFE9', borderColor: '#E8DFD0' }}>
+                          <div className="font-semibold text-xs mb-0.5" style={{ color: '#3B4B3F' }}>{vocab.word}</div>
+                          <div className="text-xs leading-relaxed" style={{ color: '#6B6060' }}>{vocab.definition}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setActiveTab('lesson')}
+                    className="text-xs font-medium underline underline-offset-2"
+                    style={{ color: '#5A6F5E' }}>
+                    Open full lesson tab →
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

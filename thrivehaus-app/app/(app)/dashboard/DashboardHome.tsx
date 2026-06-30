@@ -179,6 +179,7 @@ export default function DashboardHome({ family, blueprint, blueprintUnlocked }: 
           { href: "/dashboard/cocare", icon: "♡", label: "Co-Care Network", color: "var(--color-terracotta)", desc: "Shared childcare + playdates" },
           { href: "/dashboard/pods", icon: "◈", label: "Learning Pods", color: "var(--color-ochre)", desc: "Education + micro-guilds" },
           { href: "/dashboard/guild", icon: "✦", label: "Professional Guild", color: "var(--color-sage)", desc: "Vetted family specialists" },
+          { href: "/culture-kitchen", icon: "🍽️", label: "Culture Kitchen", color: "var(--color-ochre)", desc: "Heritage meal plans + homeschool lessons" },
         ].map((item) => (
           <Link key={item.href} href={item.href}
             className="card p-5 border-l-4 hover:shadow-md transition-shadow block"

@@ -150,7 +150,7 @@ function CultureDetail({ culture, recipes }: { culture: ReturnType<typeof getCul
                   Get recipes tailored to your family
                 </h3>
                 <p className="text-sm" style={{ color: '#8A8070' }}>
-                  Soon, Culture Kitchen will use AI to generate {culture!.name} recipes personalized
+                  Soon, Culture Kitchen will use AI to generate {culture!.name}{' '}recipes personalized
                   to your family size, dietary needs, kids&apos; ages, and available pantry ingredients.
                 </p>
               </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, FileText, MessageCircle, Settings, LogOut, BarChart2, Heart, BookOpen, Star, GraduationCap, Home as HomeIcon } from "lucide-react";
+import { Home, FileText, MessageCircle, Settings, LogOut, BarChart2, Heart, BookOpen, Star, GraduationCap, Home as HomeIcon, UtensilsCrossed } from "lucide-react";
 import Logo from "@/components/ui/Logo";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ const navItems = [
   { label: "Professional Guild", href: "/dashboard/guild", icon: Star },
   { label: "Homeschool Hub", href: "/dashboard/homeschool", icon: GraduationCap },
   { label: "HomeOps",        href: "/dashboard/homeops",   icon: HomeIcon },
+  { label: "Culture Kitchen", href: "/culture-kitchen", icon: UtensilsCrossed },
   { label: "Settings", href: "/settings", icon: Settings },
 ];
 

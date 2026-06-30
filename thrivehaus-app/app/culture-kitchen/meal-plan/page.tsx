@@ -46,6 +46,7 @@ export default function MealPlanPage() {
   const [generated, setGenerated] = useState<MealPlan | null>(sampleMealPlan);
   const [generating, setGenerating] = useState(false);
   const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [lessonOpen, setLessonOpen] = useState(true);
 
   const handleGenerate = () => {
     setGenerating(true);
@@ -293,6 +294,45 @@ export default function MealPlanPage() {
                   style={{ borderColor: '#3B4B3F', color: '#3B4B3F' }}>
                   ❤️ Save This Plan
                 </Link>
+              </div>
+
+              {/* Weekly Homeschool Theme */}
+              <div className="mt-6 rounded-2xl border overflow-hidden" style={{ borderColor: '#C8D8C4' }}>
+                <button
+                  onClick={() => setLessonOpen((o) => !o)}
+                  className="w-full flex items-center justify-between px-5 py-4 text-left"
+                  style={{ backgroundColor: '#F0F5F0' }}>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">📚</span>
+                    <div>
+                      <div className="font-semibold text-sm" style={{ color: '#3B4B3F' }}>
+                        This Week&apos;s Homeschool Theme
+                      </div>
+                      <div className="text-xs" style={{ color: '#5A6F5E' }}>
+                        {generated.homeschoolTheme}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-lg" style={{ color: '#5A6F5E' }}>{lessonOpen ? '▲' : '▼'}</span>
+                </button>
+
+                {lessonOpen && (
+                  <div className="p-5 space-y-4" style={{ backgroundColor: '#FFFDF9' }}>
+                    <p className="text-sm leading-relaxed" style={{ color: '#4A4040' }}>
+                      This week&apos;s meals are a gateway into <strong>{generated.homeschoolTheme}</strong>.
+                      Each recipe carries a built-in lesson — explore any dish below to find discussion
+                      questions, vocabulary words, activities, and fun facts for your kids.
+                    </p>
+                    <div className="flex flex-wrap gap-3">
+                      <Link
+                        href={`/culture-kitchen/cultures/${generated.cultureId}`}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+                        style={{ backgroundColor: '#5A6F5E', color: '#FFFDF9' }}>
+                        🌍 Explore {generated.cultureName} Culture & Recipes
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* AI Teaser */}
