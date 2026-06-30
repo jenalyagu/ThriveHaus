@@ -22,7 +22,7 @@ export default function CultureKitchenHome() {
               <em className="not-italic" style={{ color: '#F5C878' }}>Feed Your Roots.</em>
             </h1>
             <p className="text-lg mb-8 leading-relaxed" style={{ color: '#C8D8C4' }}>
-              Explore 7 world cuisines with meal plans, recipes, and homeschool lessons
+              Explore 13 world cuisines with meal plans, recipes, and homeschool lessons
               built around your family&apos;s cultural heritage.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -48,9 +48,9 @@ export default function CultureKitchenHome() {
       {/* Quick Stats */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
         {[
-          { emoji: '🌍', value: '7', label: 'World Cultures' },
-          { emoji: '🍽️', value: '14+', label: 'Recipes' },
-          { emoji: '📚', value: '14+', label: 'Homeschool Lessons' },
+          { emoji: '🌍', value: '13', label: 'World Cultures' },
+          { emoji: '🍽️', value: '26+', label: 'Recipes' },
+          { emoji: '📚', value: '26+', label: 'Homeschool Lessons' },
           { emoji: '📅', value: '∞', label: 'Weekly Plans' },
         ].map((stat) => (
           <div key={stat.label} className="rounded-2xl p-5 text-center border"

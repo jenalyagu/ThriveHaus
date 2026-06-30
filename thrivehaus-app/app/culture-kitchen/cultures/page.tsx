@@ -25,7 +25,7 @@ export default function CultureLibraryPage() {
           🌍 Culture Library
         </h1>
         <p className="text-base" style={{ color: '#8A8070' }}>
-          Explore world cuisines — their histories, ingredients, recipes, and homeschool connections.
+          Explore 13 world cuisines — their histories, ingredients, recipes, and homeschool connections.
         </p>
       </div>
 
