@@ -202,10 +202,33 @@ const ROTATION_CYCLE: Record<RoleTier, Department[]> = {
   "trainee":   ["kitchen","facilities","logistics","grounds"],
 };
 
-export function assignRole(member: FamilyMember, rotationWeek: number): HomeRole {
+// Shared connection activities that all adults do together — rotates weekly
+export interface SharedConnectionRole {
+  title: string;
+  emoji: string;
+  activity: string;
+  duration: string;
+  why: string;
+}
+
+export const SHARED_CONNECTION_ROLES: SharedConnectionRole[] = [
+  { title: "Sunday Reset Together",       emoji: "♻️", activity: "Do the weekly home reset side by side — divide the list and check in as you go.",          duration: "60–90 min", why: "Shared labor builds partnership and closes the week with intention." },
+  { title: "Meal Prep & Kitchen Date",    emoji: "🍳", activity: "Batch cook for the week together — one person preps, one cooks, both taste-test.",          duration: "90 min",    why: "Working in the kitchen together is one of the most underrated bonding rituals." },
+  { title: "Family Finance Meeting",      emoji: "💰", activity: "Sit down together to review the weekly budget, flag any surprises, and align on the week ahead.", duration: "20–30 min", why: "Being on the same financial page reduces conflict and builds trust." },
+  { title: "Home Walkthrough Audit",      emoji: "🏠", activity: "Walk through every room together — note what needs attention, celebrate what's working.",    duration: "20 min",    why: "Shared ownership of the home starts with seeing it through the same eyes." },
+  { title: "Seasonal Planning Session",   emoji: "📅", activity: "Review the calendar together for the next 4–6 weeks — flag big events, schedule date nights, plan coverage.", duration: "30 min", why: "Getting ahead together prevents the last-minute scramble that erodes connection." },
+  { title: "Declutter One Space",         emoji: "🧹", activity: "Pick one drawer, closet, or shelf and declutter it together — keep, donate, trash.",         duration: "30–45 min", why: "Clearing space together creates a sense of shared accomplishment." },
+  { title: "Evening Walk & Debrief",      emoji: "🌿", activity: "After dinner, take a 20-minute walk together — no phones, just talk about the week.",        duration: "20–30 min", why: "Movement + conversation = the simplest connection ritual that actually works." },
+  { title: "Grocery Run Together",        emoji: "🛒", activity: "Do the weekly grocery shop as a team — split the list, meet at checkout.",                   duration: "45–60 min", why: "Mundane errands become quality time when you show up to them together." },
+  { title: "Gratitude Check-In",          emoji: "💛", activity: "Take 15 minutes to each share one win, one hard thing, and one thing you appreciate about the other.", duration: "15 min", why: "The couples who name what's working stay connected through what's hard." },
+  { title: "Backyard / Outdoor Reset",    emoji: "🌱", activity: "Tidy the outdoor space together — sweep, water, tend, reset for the week.",                  duration: "30–45 min", why: "Caring for shared physical space reinforces that you're building something together." },
+];
+
+export function assignRole(member: FamilyMember, rotationWeek: number, memberIndex = 0): HomeRole {
   const tier = ageTier(member.age, member.isAdult);
   const cycle = ROTATION_CYCLE[tier];
-  const dept: Department = cycle[rotationWeek % cycle.length];
+  // Offset by memberIndex so each adult lands on a different department each week
+  const dept: Department = cycle[(rotationWeek + memberIndex) % cycle.length];
   return {
     title:  ROLE_TITLES[tier][dept],
     emoji:  DEPARTMENTS[dept].emoji,
@@ -214,6 +237,10 @@ export function assignRole(member: FamilyMember, rotationWeek: number): HomeRole
     chores: ROLE_CHORES[tier][dept],
     perks:  ROLE_PERKS[tier],
   };
+}
+
+export function getSharedConnectionRole(rotationWeek: number): SharedConnectionRole {
+  return SHARED_CONNECTION_ROLES[rotationWeek % SHARED_CONNECTION_ROLES.length];
 }
 
 export const TIER_BADGE: Record<RoleTier, { label: string; color: string; bg: string }> = {

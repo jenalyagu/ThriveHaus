@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import {
-  assignRole, ageTier, DEPARTMENTS, TIER_BADGE,
+  assignRole, ageTier, DEPARTMENTS, TIER_BADGE, getSharedConnectionRole,
   type FamilyMember, type Department,
 } from "@/lib/homeops";
 import type { Member } from "../HomeOpsHub";
@@ -42,11 +42,16 @@ export default function ChoresTab({ members: rawMembers }: Props) {
   const [newMember, setNewMember] = useState({ name: "", age: "", isAdult: false });
   const [editId, setEditId] = useState<string | null>(null);
 
-  // Assign roles for current rotation
-  const roster = useMemo(() =>
-    familyMembers.map((m) => ({ ...m, currentRole: assignRole(m, rotationWeek) })),
-    [familyMembers, rotationWeek]
-  );
+  // Assign roles for current rotation — adults offset by index so each gets a different department
+  const roster = useMemo(() => {
+    let adultIndex = 0;
+    return familyMembers.map((m) => {
+      const memberIndex = m.isAdult || m.age === null || (m.age ?? 0) >= 18 ? adultIndex++ : 0;
+      return { ...m, currentRole: assignRole(m, rotationWeek, memberIndex) };
+    });
+  }, [familyMembers, rotationWeek]);
+
+  const sharedRole = useMemo(() => getSharedConnectionRole(rotationWeek), [rotationWeek]);
 
   // Group by department for the board view
   const byDept = useMemo(() => {
@@ -181,6 +186,32 @@ export default function ChoresTab({ members: rawMembers }: Props) {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {csuite.map((m) => <RoleCard key={m.id} member={m} completedChores={completedChores} onToggle={toggleChore} choreKey={choreKey} rotationWeek={rotationWeek} />)}
                     </div>
+
+                    {/* Shared connection activity — only shown when there are 2+ adults */}
+                    {csuite.length >= 2 && (
+                      <div className="mt-4 rounded-2xl p-5 border-2 flex items-start gap-4"
+                        style={{
+                          borderColor: "color-mix(in srgb, var(--color-terracotta) 25%, transparent)",
+                          background: "linear-gradient(135deg, color-mix(in srgb, var(--color-terracotta) 5%, transparent), color-mix(in srgb, var(--color-ochre) 5%, transparent))",
+                        }}>
+                        <span className="text-2xl shrink-0">{sharedRole.emoji}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                            <p className="text-sm font-semibold" style={{ color: "var(--color-charcoal)" }}>{sharedRole.title}</p>
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                              style={{ backgroundColor: "color-mix(in srgb, var(--color-terracotta) 12%, transparent)", color: "var(--color-terracotta)" }}>
+                              Together · {sharedRole.duration}
+                            </span>
+                          </div>
+                          <p className="text-xs leading-relaxed mb-2" style={{ color: "var(--color-charcoal)" }}>
+                            {sharedRole.activity}
+                          </p>
+                          <p className="text-[10px] italic" style={{ color: "color-mix(in srgb, var(--color-charcoal) 50%, transparent)" }}>
+                            💛 {sharedRole.why}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
                 {rest.length > 0 && (
@@ -207,59 +238,118 @@ export default function ChoresTab({ members: rawMembers }: Props) {
 
       {/* ── DEPT BOARD ── */}
       {view === "board" && (
-        <div className="space-y-4">
-          {DEPT_ORDER.filter((d) => byDept[d]?.length).map((dept) => {
-            const config = DEPARTMENTS[dept];
-            const deptMembers = byDept[dept]!;
-            return (
-              <div key={dept} className="card p-5">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-xl">{config.emoji}</span>
-                  <div>
-                    <p className="font-serif text-base font-medium" style={{ color: "var(--color-charcoal)" }}>{config.label}</p>
-                    <p className="text-xs" style={{ color: "color-mix(in srgb, var(--color-charcoal) 45%, transparent)" }}>{config.description}</p>
-                  </div>
-                  <span className="ml-auto text-xs font-semibold px-2.5 py-1 rounded-full"
-                    style={{ backgroundColor: "color-mix(in srgb, var(--color-forest) 8%, transparent)", color: "var(--color-forest)" }}>
-                    {deptMembers.length} member{deptMembers.length !== 1 ? "s" : ""}
-                  </span>
-                </div>
-                <div className="space-y-3">
-                  {deptMembers.map((m) => {
-                    const badge = TIER_BADGE[m.currentRole!.tier];
-                    return (
-                      <div key={m.id}>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-base">{m.currentRole!.emoji}</span>
-                          <span className="text-sm font-semibold" style={{ color: "var(--color-charcoal)" }}>{m.name}</span>
-                          <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                            style={{ backgroundColor: badge.bg, color: badge.color }}>{m.currentRole!.title}</span>
-                        </div>
-                        <div className="space-y-1 pl-8">
-                          {m.currentRole!.chores.map((chore, i) => {
-                            const key = choreKey(m.id, i);
-                            const done = !!completedChores[key];
-                            return (
-                              <div key={i} onClick={() => toggleChore(m.id, i)}
-                                className="flex items-center gap-2 cursor-pointer group">
-                                <div className="w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 transition-colors"
-                                  style={{ backgroundColor: done ? "var(--color-sage)" : "transparent", borderColor: done ? "var(--color-sage)" : "color-mix(in srgb, var(--color-charcoal) 20%, transparent)" }}>
-                                  {done && <span style={{ color: "white", fontSize: "0.45rem" }}>✓</span>}
-                                </div>
-                                <span className="text-xs" style={{ color: done ? "color-mix(in srgb, var(--color-charcoal) 35%, transparent)" : "var(--color-charcoal)", textDecoration: done ? "line-through" : "none" }}>
-                                  {chore}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+        <div>
+          {/* Description banner */}
+          <div className="rounded-2xl p-5 mb-6 border" style={{
+            backgroundColor: "color-mix(in srgb, var(--color-forest) 5%, transparent)",
+            borderColor: "color-mix(in srgb, var(--color-forest) 12%, transparent)",
+          }}>
+            <div className="flex items-start gap-3">
+              <span className="text-2xl shrink-0">🏢</span>
+              <div>
+                <p className="font-serif text-base font-medium mb-1" style={{ color: "var(--color-forest)" }}>
+                  Welcome to Corporate HQ — Population: Your Family
+                </p>
+                <p className="text-xs leading-relaxed" style={{ color: "color-mix(in srgb, var(--color-charcoal) 60%, transparent)" }}>
+                  Each department is staffed by whoever the rotation assigned this week. Tasks within each department are calibrated to each person&apos;s age and abilities — the C-Suite gets the heavy lifting, Trainees get the wins they can actually pull off. Nobody is above their department. Not even the CEO.
+                </p>
+                <p className="text-[10px] mt-2 italic" style={{ color: "color-mix(in srgb, var(--color-charcoal) 40%, transparent)" }}>
+                  Tip: tasks are grouped by department so the whole team can see who&apos;s covering what this week.
+                </p>
               </div>
-            );
-          })}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {DEPT_ORDER.filter((d) => byDept[d]?.length).map((dept) => {
+              const config = DEPARTMENTS[dept];
+              const deptMembers = byDept[dept]!;
+              return (
+                <div key={dept} className="card p-5">
+                  {/* Dept header */}
+                  <div className="flex items-center gap-3 mb-5 pb-4 border-b" style={{ borderColor: "var(--color-sand)" }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
+                      style={{ backgroundColor: `color-mix(in srgb, ${config.color} 10%, transparent)` }}>
+                      {config.emoji}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-serif text-base font-medium leading-tight" style={{ color: "var(--color-charcoal)" }}>{config.label}</p>
+                      <p className="text-xs mt-0.5" style={{ color: "color-mix(in srgb, var(--color-charcoal) 45%, transparent)" }}>{config.description}</p>
+                    </div>
+                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0"
+                      style={{ backgroundColor: `color-mix(in srgb, ${config.color} 10%, transparent)`, color: config.color }}>
+                      {deptMembers.length} on staff
+                    </span>
+                  </div>
+
+                  {/* Members in this dept */}
+                  <div className="space-y-5">
+                    {deptMembers.map((m) => {
+                      const badge = TIER_BADGE[m.currentRole!.tier];
+                      const ageLabel = m.isAdult || m.age === null
+                        ? "Adult"
+                        : m.age >= 14 ? `Age ${m.age} · Teen`
+                        : m.age >= 11 ? `Age ${m.age} · Preteen`
+                        : m.age >= 8  ? `Age ${m.age} · Big kid`
+                        : m.age >= 5  ? `Age ${m.age} · Little kid`
+                        : `Age ${m.age} · Tiny helper`;
+                      const abilityNote = m.isAdult || m.age === null
+                        ? "Full ownership — plan, execute, and follow through independently."
+                        : m.age >= 14 ? "Can handle multi-step tasks and work with minimal supervision."
+                        : m.age >= 11 ? "Ready for real responsibility with light check-ins."
+                        : m.age >= 8  ? "Handles assigned tasks well with a clear instruction."
+                        : m.age >= 5  ? "Builds habits with simple, concrete one-step tasks."
+                        : "Learning through participation — short, supervised tasks only.";
+
+                      return (
+                        <div key={m.id} className="rounded-xl p-4" style={{ backgroundColor: "color-mix(in srgb, var(--color-cream) 60%, white)" }}>
+                          {/* Member header */}
+                          <div className="flex items-start gap-3 mb-3">
+                            <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0"
+                              style={{ backgroundColor: badge.bg, color: badge.color }}>
+                              {m.name[0]?.toUpperCase()}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-sm font-semibold" style={{ color: "var(--color-charcoal)" }}>{m.name}</span>
+                                <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                                  style={{ backgroundColor: badge.bg, color: badge.color }}>{m.currentRole!.title}</span>
+                              </div>
+                              <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                                <span className="text-[10px]" style={{ color: "color-mix(in srgb, var(--color-charcoal) 45%, transparent)" }}>{ageLabel}</span>
+                                <span className="text-[10px]" style={{ color: "color-mix(in srgb, var(--color-charcoal) 25%, transparent)" }}>·</span>
+                                <span className="text-[10px] italic" style={{ color: "color-mix(in srgb, var(--color-charcoal) 45%, transparent)" }}>{abilityNote}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Chore list */}
+                          <div className="space-y-1.5 pl-11">
+                            {m.currentRole!.chores.map((chore, i) => {
+                              const key = choreKey(m.id, i);
+                              const done = !!completedChores[key];
+                              return (
+                                <div key={i} onClick={() => toggleChore(m.id, i)}
+                                  className="flex items-center gap-2 cursor-pointer">
+                                  <div className="w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 transition-colors"
+                                    style={{ backgroundColor: done ? "var(--color-sage)" : "transparent", borderColor: done ? "var(--color-sage)" : "color-mix(in srgb, var(--color-charcoal) 20%, transparent)" }}>
+                                    {done && <span style={{ color: "white", fontSize: "0.45rem" }}>✓</span>}
+                                  </div>
+                                  <span className="text-xs" style={{ color: done ? "color-mix(in srgb, var(--color-charcoal) 35%, transparent)" : "var(--color-charcoal)", textDecoration: done ? "line-through" : "none" }}>
+                                    {chore}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
 

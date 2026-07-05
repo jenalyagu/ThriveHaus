@@ -99,10 +99,11 @@ export default function CurriculumTab({ familyId, children, learningStyle, famil
         setExpandedSubject(data.subjects?.[0]?.name ?? null);
         setSaveStatus("idle");
       } else {
-        setGenError("Generation failed. Try again.");
+        const body = await res.json().catch(() => ({}));
+        setGenError(body.error || `Generation failed (${res.status}). Try again.`);
       }
     } catch {
-      setGenError("Network error. Try again.");
+      setGenError("Network error — check your connection and try again.");
     } finally {
       setLoading(false);
     }

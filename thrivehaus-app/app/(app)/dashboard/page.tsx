@@ -34,21 +34,19 @@ export default async function DashboardPage() {
   const family = rawFamily as FamilyWithRelations;
   family.village_scores = { ...defaultScores, ...(rawFamily.village_scores || {}) };
 
-  const blueprintUnlocked: boolean = !!(rawFamily as { blueprint_unlocked?: boolean }).blueprint_unlocked;
+  const blueprintUnlocked = true;
 
-  const { data: blueprint } = blueprintUnlocked
-    ? await db
-        .from("blueprints")
-        .select("*")
-        .eq("family_id", family.id)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .single()
-    : { data: null };
+  const { data: blueprint } = await db
+    .from("blueprints")
+    .select("*")
+    .eq("family_id", family.id)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
   return (
     <DashboardShell userEmail={user.email}>
-      <DashboardHome family={family} blueprint={blueprint} blueprintUnlocked={blueprintUnlocked} />
+      <DashboardHome family={family} blueprint={blueprint} />
     </DashboardShell>
   );
 }

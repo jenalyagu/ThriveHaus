@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { BlueprintContent } from "@/types";
 import ChoresTab from "./tabs/ChoresTab";
 import MealsTab from "./tabs/MealsTab";
 import BudgetTab from "./tabs/BudgetTab";
@@ -33,9 +34,10 @@ interface Props {
   familyId: string;
   familyName: string;
   members: Member[];
+  blueprintContent: BlueprintContent | null;
 }
 
-export default function HomeOpsHub({ familyId, familyName, members }: Props) {
+export default function HomeOpsHub({ familyId, familyName, members, blueprintContent }: Props) {
   const [tab, setTab] = useState<Tab>("chores");
 
   return (
@@ -72,7 +74,7 @@ export default function HomeOpsHub({ familyId, familyName, members }: Props) {
       </div>
 
       {tab === "chores"      && <ChoresTab members={members} />}
-      {tab === "meals"       && <MealsTab />}
+      {tab === "meals"       && <MealsTab mealApproach={blueprintContent?.mealApproach ?? null} />}
       {tab === "budget"      && <BudgetTab />}
       {tab === "rhythms"     && <RhythmsTab />}
       {tab === "maintenance" && <MaintenanceTab />}

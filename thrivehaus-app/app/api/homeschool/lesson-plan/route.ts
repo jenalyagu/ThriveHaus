@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+  if (!process.env.GROQ_API_KEY) {
+    return NextResponse.json({ error: "GROQ_API_KEY not configured" }, { status: 500 });
+  }
+
   const { children, learningStyle, familyName, blueprintContent } = await req.json();
 
   const Groq = (await import("groq-sdk")).default;
@@ -61,7 +65,7 @@ Return ONLY valid JSON:
     }
   ],
   "weeklyAnchor": "The single most important hands-on activity or project for the week",
-  "resourceSpotlight": { "title": "One book or resource name", "why": "One sentence on why it fits this family" },
+  "resourceSpotlight": { "title": "One book or resource name", "why": "One grammatically correct sentence on why it fits this family — use 'an' before vowel sounds (e.g. 'an engaging', 'an excellent')" },
   "encouragement": "A warm 1-sentence note to ${familyName} about this week's learning journey"
 }
 
@@ -78,18 +82,35 @@ Requirements:
 - If Eclectic: blend 2–3 styles that fit the family's rhythm
 `;
 
-  const completion = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [
-      { role: "system", content: "You are ThriveHaus, a homeschool curriculum designer. Respond ONLY with valid JSON — no markdown, no code fences." },
-      { role: "user", content: prompt },
-    ],
-    temperature: 0.75,
-    max_tokens: 2500,
-    response_format: { type: "json_object" },
-  });
+  try {
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: "You are ThriveHaus, a homeschool curriculum designer. Respond ONLY with valid JSON — no markdown, no code fences." },
+        { role: "user", content: prompt },
+      ],
+      temperature: 0.75,
+      max_tokens: 2500,
+      response_format: { type: "json_object" },
+    });
 
-  const raw = completion.choices[0].message.content || "{}";
-  const parsed = JSON.parse(raw.replace(/^```json\n?|\n?```$/g, "").trim());
-  return NextResponse.json(parsed);
+    const raw = completion.choices[0].message.content || "{}";
+    const parsed = JSON.parse(raw.replace(/^```json\n?|\n?```$/g, "").trim());
+
+    // Fix common AI grammar slip: "a [vowel-sound word]" → "an [vowel-sound word]"
+    if (parsed.resourceSpotlight?.why) {
+      parsed.resourceSpotlight.why = parsed.resourceSpotlight.why.replace(/\b(a)\s+([aeiouAEIOU])/g, "an $2");
+    }
+
+    return NextResponse.json(parsed);
+  } catch (err: unknown) {
+    const status = (err as { status?: number }).status;
+    const message = (err as { error?: { message?: string } }).error?.message || (err as Error).message || "Unknown error";
+    console.error("[lesson-plan] Groq error:", status, message);
+
+    if (status === 401) {
+      return NextResponse.json({ error: "API key invalid or expired. Please update GROQ_API_KEY." }, { status: 401 });
+    }
+    return NextResponse.json({ error: message }, { status: status ?? 500 });
+  }
 }

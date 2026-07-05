@@ -16,7 +16,17 @@ interface BatchPlan {
   tip: string;
 }
 
-export default function MealsTab() {
+interface MealApproach {
+  philosophy: string;
+  weeklyAnchor: string;
+  quickWins: string[];
+}
+
+interface Props {
+  mealApproach: MealApproach | null;
+}
+
+export default function MealsTab({ mealApproach }: Props) {
   const [tab, setTab] = useState<TabKey>("plan");
   const [meals, setMeals] = useState<DayMeals[]>(DEFAULT_MEALS);
   const [editing, setEditing] = useState<{ day: string; meal: MealKey } | null>(null);
@@ -42,6 +52,8 @@ export default function MealsTab() {
     setEditing(null);
   }
 
+  const dietaryContext = mealApproach?.philosophy ? [mealApproach.philosophy] : [];
+
   async function regenerateMeal(day: string, meal: MealKey) {
     setRegenerating({ day, meal });
     try {
@@ -49,7 +61,7 @@ export default function MealsTab() {
       const res = await fetch("/api/meals/suggest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mealType: meal, day, currentMeals }),
+        body: JSON.stringify({ mealType: meal, day, currentMeals, preferences: dietaryContext }),
       });
       if (res.ok) {
         const { meal: suggested } = await res.json();
@@ -67,7 +79,7 @@ export default function MealsTab() {
       const res = await fetch("/api/meals/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ meals }),
+        body: JSON.stringify({ meals, preferences: dietaryContext }),
       });
       if (res.ok) {
         const plan: BatchPlan = await res.json();
@@ -104,6 +116,26 @@ export default function MealsTab() {
 
   return (
     <div>
+      {mealApproach && (
+        <div className="rounded-2xl p-4 mb-5 flex items-start gap-3 border"
+          style={{ backgroundColor: "color-mix(in srgb, var(--color-forest) 6%, transparent)", borderColor: "color-mix(in srgb, var(--color-forest) 15%, transparent)" }}>
+          <span className="text-lg shrink-0">🗺️</span>
+          <div>
+            <p className="text-xs font-semibold mb-0.5" style={{ color: "var(--color-forest)" }}>Personalized by your Family Blueprint</p>
+            <p className="text-xs leading-relaxed" style={{ color: "color-mix(in srgb, var(--color-charcoal) 65%, transparent)" }}>{mealApproach.philosophy}</p>
+            {mealApproach.quickWins?.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {mealApproach.quickWins.map((win, i) => (
+                  <span key={i} className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+                    style={{ backgroundColor: "color-mix(in srgb, var(--color-sage) 15%, transparent)", color: "var(--color-forest)" }}>
+                    {win}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       <div className="flex gap-2 mb-5 flex-wrap">
         {TABS.map((t) => (
           <button key={t.key} onClick={() => setTab(t.key)}
